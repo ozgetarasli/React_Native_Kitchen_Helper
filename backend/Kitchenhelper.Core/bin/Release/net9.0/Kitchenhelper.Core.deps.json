@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "Kitchenhelper.Core/1.0.0": {
+        "runtime": {
+          "Kitchenhelper.Core.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Kitchenhelper.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,934 @@
+@model IEnumerable<Kitchenhelper.Core.Entities.PantryItem>
+@{
+    ViewData["Title"] = ViewBag.Title ?? "Kiler";
+}
+
+<div id="pantry" class="pantry-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <i data-lucide="package" class="hero-icon"></i>
+                    @ViewData["Title"]
+                </h1>
+                <p class="hero-subtitle">Elinizdeki malzemeleri akıllıca yönetin, israfı önleyin</p>
+            </div>
+            <div class="hero-actions">
+                <a asp-action="Create" class="btn-hero">
+                    <i data-lucide="plus" class="me-2"></i>
+                    Yeni Malzeme
+                </a>
+                <button class="btn-hero-secondary" onclick="quickAdd()">
+                    <i data-lucide="zap" class="me-2"></i>
+                    Hızlı Ekle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="search-filter-bar">
+        <div class="search-section">
+            <div class="search-box">
+                <i data-lucide="search" class="search-icon"></i>
+                <form asp-action="Search" method="get" class="search-form">
+                    <input name="q" type="text" class="search-input" placeholder="Malzeme ara..." value="@ViewBag.SearchQuery" />
+                </form>
+            </div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-tabs">
+                <a asp-action="Index" class="filter-tab @(ViewBag.Category == null ? "active" : "")">
+                    <i data-lucide="grid-3x3"></i>
+                    <span>Tümü</span>
+                </a>
+                <a asp-action="Category" asp-route-category="fresh" class="filter-tab @(ViewBag.Category == "fresh" ? "active" : "")">
+                    <i data-lucide="leaf"></i>
+                    <span>Taze</span>
+                </a>
+                <a asp-action="Category" asp-route-category="dry" class="filter-tab @(ViewBag.Category == "dry" ? "active" : "")">
+                    <i data-lucide="wheat"></i>
+                    <span>Kuru</span>
+                </a>
+                <a asp-action="Category" asp-route-category="frozen" class="filter-tab @(ViewBag.Category == "frozen" ? "active" : "")">
+                    <i data-lucide="snowflake"></i>
+                    <span>Dondurulmuş</span>
+                </a>
+                <a asp-action="Category" asp-route-category="canned" class="filter-tab @(ViewBag.Category == "canned" ? "active" : "")">
+                    <i data-lucide="package"></i>
+                    <span>Konserve</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <div class="stats-dashboard">
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <i data-lucide="package"></i>
+            </div>
+            <div class="stat-content">
+                <h3>@ViewBag.TotalCount</h3>
+                <p>Toplam Malzeme</p>
+            </div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-icon">
+                <i data-lucide="clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3>@ViewBag.ExpiringSoonCount</h3>
+                <p>Yakında Bitecek</p>
+            </div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-icon">
+                <i data-lucide="chef-hat"></i>
+            </div>
+            <div class="stat-content">
+                <h3>@ViewBag.AvailableRecipes</h3>
+                <p>Yapılabilir Tarif</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantry Grid -->
+    <div class="pantry-grid">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i data-lucide="package"></i>
+                </div>
+                <h3>Kiler boş</h3>
+                <p>Henüz malzeme eklenmemiş. İlk malzemenizi ekleyin!</p>
+                <a asp-action="Create" class="btn-primary">
+                    <i data-lucide="plus" class="me-2"></i>
+                    İlk Malzemeni Ekle
+                </a>
+            </div>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="pantry-item" data-category="@item.Category.ToLower()">
+                    <div class="item-header">
+                        <div class="item-category @item.Category.ToLower()">
+                            <i data-lucide="@GetCategoryIcon(item.Category)"></i>
+                        </div>
+                        <div class="item-actions">
+                            <div class="action-menu">
+                                <button class="action-trigger">
+                                    <i data-lucide="more-horizontal"></i>
+                                </button>
+                                <div class="action-dropdown">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="action-item">
+                                        <i data-lucide="edit"></i>
+                                        <span>Düzenle</span>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="action-item danger">
+                                        <i data-lucide="trash-2"></i>
+                                        <span>Sil</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="item-content">
+                        <h4 class="item-name">@item.Name</h4>
+                        <div class="item-quantity">
+                            <i data-lucide="scale"></i>
+                            <span>@item.Quantity @item.Unit</span>
+                        </div>
+                        
+                        @if (item.ExpiryDate.HasValue)
+                        {
+                            var isExpired = item.ExpiryDate.Value < DateTime.Now;
+                            var isExpiringSoon = item.ExpiryDate.Value <= DateTime.Now.AddDays(7) && item.ExpiryDate.Value >= DateTime.Now;
+                            <div class="item-expiry @(isExpired ? "expired" : isExpiringSoon ? "expiring" : "")">
+                                <i data-lucide="calendar"></i>
+                                <span>@item.ExpiryDate.Value.ToString("dd.MM.yyyy")</span>
+                                @if (isExpired)
+                                {
+                                    <span class="expiry-badge">Süresi geçmiş</span>
+                                }
+                                else if (isExpiringSoon)
+                                {
+                                    <span class="expiry-badge">Yakında bitecek</span>
+                                }
+                            </div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(item.Notes))
+                        {
+                            <div class="item-notes">
+                                <i data-lucide="message-square"></i>
+                                <span>@item.Notes</span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="item-footer">
+                        <small class="item-date">
+                            <i data-lucide="clock"></i>
+                            @item.DateAdded.ToString("dd.MM.yyyy")
+                        </small>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Quick Add Modal -->
+<div id="quickAddModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Hızlı Malzeme Ekle</h3>
+            <button class="modal-close" onclick="closeQuickAdd()">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="quickAddForm">
+                <div class="form-group">
+                    <label>Malzeme Adı</label>
+                    <input type="text" id="quickName" placeholder="Örn: Domates, Yumurta" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Miktar</label>
+                        <input type="number" id="quickQuantity" step="0.01" min="0.01" placeholder="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Birim</label>
+                        <select id="quickUnit">
+                            <option value="adet">Adet</option>
+                            <option value="kg">Kilogram</option>
+                            <option value="gr">Gram</option>
+                            <option value="lt">Litre</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="quickCategory">
+                        <option value="fresh">Taze</option>
+                        <option value="dry">Kuru</option>
+                        <option value="frozen">Dondurulmuş</option>
+                        <option value="canned">Konserve</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeQuickAdd()">İptal</button>
+            <button class="btn-primary" onclick="submitQuickAdd()">Ekle</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.pantry-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hero-icon {
+    font-size: 3.5rem;
+    opacity: 0.9;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-hero {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-hero:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-hero-secondary {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Search & Filter Bar */
+.search-filter-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.search-section {
+    flex: 1;
+}
+
+.search-box {
+    position: relative;
+    max-width: 400px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 1.2rem;
+}
+
+.search-form {
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filter-section {
+    flex-shrink: 0;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #6b7280;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.filter-tab:hover {
+    background: #f3f4f6;
+    color: #374151;
+    text-decoration: none;
+}
+
+.filter-tab.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* Stats Dashboard */
+.stats-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stat-card.warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.stat-card.success {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.stat-card.danger {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.stat-content h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.stat-content p {
+    margin: 0;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.stat-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.stat-link:hover {
+    color: white;
+    text-decoration: none;
+    transform: translateX(4px);
+}
+
+/* Pantry Grid */
+.pantry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.pantry-item {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.pantry-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.item-category {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.item-category.fresh { background: linear-gradient(135deg, #4ade80, #22c55e); }
+.item-category.dry { background: linear-gradient(135deg, #a3a3a3, #737373); }
+.item-category.frozen { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+.item-category.canned { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.item-category.dairy { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.item-category.meat { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.item-category.spice { background: linear-gradient(135deg, #f97316, #ea580c); }
+
+.item-actions {
+    position: relative;
+}
+
+.action-menu {
+    position: relative;
+}
+
+.action-trigger {
+    background: #f3f4f6;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-trigger:hover {
+    background: #e5e7eb;
+}
+
+.action-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.action-menu:hover .action-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.3s ease;
+}
+
+.action-item:hover {
+    background: #f3f4f6;
+    color: #111827;
+    text-decoration: none;
+}
+
+.action-item.danger {
+    color: #dc2626;
+}
+
+.action-item.danger:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.item-content {
+    margin-bottom: 1rem;
+}
+
+.item-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: #111827;
+}
+
+.item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.item-expiry {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.item-expiry.expired {
+    color: #dc2626;
+}
+
+.item-expiry.expiring {
+    color: #f59e0b;
+}
+
+.expiry-badge {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.item-expiry.expiring .expiry-badge {
+    background: #fffbeb;
+    color: #f59e0b;
+}
+
+.item-notes {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.item-footer {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 1rem;
+}
+
+.item-date {
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Empty State */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+}
+
+.empty-state h3 {
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    color: #9ca3af;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .pantry-container {
+        padding: 1rem;
+    }
+    
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .search-filter-bar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .filter-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .stats-dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .pantry-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+function quickAdd() {
+    document.getElementById('quickAddModal').style.display = 'block';
+}
+
+function closeQuickAdd() {
+    document.getElementById('quickAddModal').style.display = 'none';
+}
+
+function submitQuickAdd() {
+    const name = document.getElementById('quickName').value;
+    const quantity = document.getElementById('quickQuantity').value;
+    const unit = document.getElementById('quickUnit').value;
+    const category = document.getElementById('quickCategory').value;
+    
+    if (!name || !quantity) {
+        alert('Lütfen tüm alanları doldurun');
+        return;
+    }
+    
+    // Form submit logic here
+    console.log('Quick add:', { name, quantity, unit, category });
+    closeQuickAdd();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('quickAddModal');
+    if (event.target === modal) {
+        closeQuickAdd();
+    }
+}
+</script>
+
+@functions {
+    string GetCategoryIcon(string category)
+    {
+        return category.ToLower() switch
+        {
+            "fresh" => "leaf",
+            "dry" => "wheat",
+            "frozen" => "snowflake",
+            "canned" => "package",
+            "dairy" => "milk",
+            "meat" => "drumstick",
+            "spice" => "pepper",
+            _ => "package"
+        };
+    }
+}

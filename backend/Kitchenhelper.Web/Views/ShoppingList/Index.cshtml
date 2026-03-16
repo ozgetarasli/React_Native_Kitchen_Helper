@@ -1,0 +1,45 @@
+@model IEnumerable<Kitchenhelper.Core.Entities.ShoppingListItem>
+    @{
+    ViewData["Title"] = "Shopping List";
+    }
+
+    <h2 class="mb-3">Shopping List</h2>
+
+    <form asp-action="Add" method="post" class="row g-2 mb-3">
+        <div class="col-auto">
+            <input class="form-control" type="text" name="name" placeholder="Add item..." />
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">Add</button>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+{
+    <div class="alert alert-info">Your shopping list is empty.</div>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var item in Model)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <form asp-action="Toggle" method="post" class="d-flex align-items-center">
+                <input type="hidden" name="id" value="@item.Id" />
+                <input class="form-check-input me-2" type="checkbox"
+                       onchange="this.form.isChecked.value=this.checked; this.form.submit();"
+                       @(item.IsChecked ? "checked" : "") />
+                <input type="hidden" name="isChecked" value="@item.IsChecked" />
+                <span class="@(item.IsChecked ? "text-decoration-line-through text-muted" : "")">
+                    @item.Name
+                </span>
+            </form>
+
+            <form asp-action="Delete" method="post" onsubmit="return confirm('Delete item?');">
+                <input type="hidden" name="id" value="@item.Id" />
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+        </li>
+    }
+    </ul>
+}

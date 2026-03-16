@@ -1,0 +1,233 @@
+{
+  "title": "Delicious Salad",
+  "servings": null,
+  "prepTimeMin": null,
+  "cookTimeMin": null,
+  "totalTimeMin": null,
+  "ingredients": [
+    {
+      "name": "potato",
+      "quantity": 4,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": true,
+        "originalText": null
+      }
+    },
+    {
+      "name": "red bell pepper",
+      "quantity": 3,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": true,
+        "originalText": null
+      }
+    },
+    {
+      "name": "corn",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": false,
+        "originalText": null
+      }
+    },
+    {
+      "name": "gherkin pickle",
+      "quantity": 6,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": true,
+        "originalText": null
+      }
+    },
+    {
+      "name": "onion",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": true,
+        "originalText": null
+      }
+    },
+    {
+      "name": "carrot",
+      "quantity": 3,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": true,
+        "originalText": null
+      }
+    },
+    {
+      "name": "dill",
+      "quantity": null,
+      "unit": null,
+      "note": "quarter bunch",
+      "flags": {
+        "uncertainQuantity": true,
+        "missingUnit": true,
+        "originalText": "Çeyrek demet"
+      }
+    },
+    {
+      "name": "yogurt",
+      "quantity": 1.5,
+      "unit": "cup",
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": false,
+        "originalText": null
+      }
+    },
+    {
+      "name": "mayonnaise",
+      "quantity": 3,
+      "unit": "tablespoon",
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": false,
+        "originalText": null
+      }
+    },
+    {
+      "name": "garlic",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": true,
+        "originalText": null
+      }
+    },
+    {
+      "name": "salt",
+      "quantity": null,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "uncertainQuantity": true,
+        "missingUnit": true,
+        "originalText": "tuz"
+      }
+    },
+    {
+      "name": "vegetable oil",
+      "quantity": 3,
+      "unit": "tablespoon",
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": false,
+        "originalText": null
+      }
+    },
+    {
+      "name": "vegetable oil",
+      "quantity": 3,
+      "unit": "tablespoon",
+      "note": null,
+      "flags": {
+        "uncertainQuantity": false,
+        "missingUnit": false,
+        "originalText": null
+      }
+    }
+  ],
+  "steps": [
+    {
+      "order": 1,
+      "text": "Dice the potatoes, add salt and 3 tablespoons of vegetable oil, and bake in the oven (you can also fry them if you like).",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true,
+        "uncertainTemperature": false,
+        "incomplete": false
+      }
+    },
+    {
+      "order": 2,
+      "text": "Add the red bell peppers to the side of the tray and roast them.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true,
+        "uncertainTemperature": false,
+        "incomplete": false
+      }
+    },
+    {
+      "order": 3,
+      "text": "Heat 3 tablespoons of vegetable oil in a pan and sauté the julienned onions and carrots separately.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true,
+        "uncertainTemperature": false,
+        "incomplete": false
+      }
+    },
+    {
+      "order": 4,
+      "text": "In a deep bowl, add the potatoes from the oven, the roasted red bell peppers (diced), and then the sautéed carrots and onions.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true,
+        "uncertainTemperature": false,
+        "incomplete": false
+      }
+    },
+    {
+      "order": 5,
+      "text": "Finally, add the corn and pickles.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true,
+        "uncertainTemperature": false,
+        "incomplete": false
+      }
+    },
+    {
+      "order": 6,
+      "text": "Mix the sauce ingredients well and add to the salad, then mix.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true,
+        "uncertainTemperature": false,
+        "incomplete": false
+      }
+    },
+    {
+      "order": 7,
+      "text": "Garnish and serve.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true,
+        "uncertainTemperature": false,
+        "incomplete": false
+      }
+    }
+  ],
+  "tips": [],
+  "calories": null,
+  "protein": null,
+  "fat": null,
+  "carbs": null,
+  "sourceNotes": {
+    "language": "en",
+    "confidence": 0.9
+  }
+}

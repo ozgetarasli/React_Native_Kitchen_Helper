@@ -1,0 +1,396 @@
+@model Kitchenhelper.Core.Entities.PantryItem
+@{
+    ViewData["Title"] = "Malzeme Sil";
+}
+
+<div class="delete-container">
+    <div class="delete-header">
+        <a asp-action="Index" class="back-btn" aria-label="Geri Dön">
+            <i data-lucide="arrow-left"></i>
+        </a>
+        <div class="header-content">
+            
+            <div class="header-text">
+                <h1>Malzeme Sil</h1>
+                <p>Bu işlem geri alınamaz</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="delete-content">
+        <div class="warning-card">
+            <div class="warning-icon">
+                <i data-lucide="alert-triangle"></i>
+            </div>
+            <div class="warning-text">
+                <h3>Dikkat!</h3>
+                <p>Bu malzemeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
+            </div>
+        </div>
+
+        <div class="item-preview">
+            <div class="item-header">
+                <div class="item-category @Model.Category.ToLower()">
+                    <i data-lucide="@GetCategoryIcon(Model.Category)"></i>
+                </div>
+                <div class="item-info">
+                    <h3>@Model.Name</h3>
+                    <span class="category-badge">@GetCategoryName(Model.Category)</span>
+                </div>
+            </div>
+            
+            <div class="item-details">
+                <div class="detail-item">
+                    <i data-lucide="scale"></i>
+                    <span><strong>Miktar:</strong> @Model.Quantity @Model.Unit</span>
+                </div>
+                
+                @if (Model.ExpiryDate.HasValue)
+                {
+                    <div class="detail-item">
+                        <i data-lucide="calendar"></i>
+                        <span><strong>Son Kullanma:</strong> 
+                            <span class="expiry-date @(Model.ExpiryDate.Value < DateTime.Now ? "expired" : "")">
+                                @Model.ExpiryDate.Value.ToString("dd.MM.yyyy")
+                            </span>
+                        </span>
+                    </div>
+                }
+                
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="detail-item">
+                        <i data-lucide="message-square"></i>
+                        <span><strong>Notlar:</strong> @Model.Notes</span>
+                    </div>
+                }
+                
+                <div class="detail-item">
+                    <i data-lucide="clock"></i>
+                    <span><strong>Eklenme:</strong> @Model.DateAdded.ToString("dd.MM.yyyy")</span>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Delete" method="post" class="delete-form">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-actions">
+                <a asp-action="Index" class="btn-cancel">
+                    <i data-lucide="x"></i>
+                    İptal
+                </a>
+                <button type="submit" class="btn-delete">
+                    <i data-lucide="trash-2"></i>
+                    Sil
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.delete-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.delete-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.header-icon {
+    font-size: 3rem;
+    opacity: 0.9;
+}
+
+.header-text h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.header-text p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+.delete-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.warning-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 2rem;
+}
+
+.warning-icon {
+    font-size: 2rem;
+    color: #dc2626;
+    flex-shrink: 0;
+}
+
+.warning-text h3 {
+    color: #dc2626;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.warning-text p {
+    color: #991b1b;
+    margin: 0;
+}
+
+.item-preview {
+    padding: 2rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.item-category {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+}
+
+.item-category.fresh { background: linear-gradient(135deg, #4ade80, #22c55e); }
+.item-category.dry { background: linear-gradient(135deg, #a3a3a3, #737373); }
+.item-category.frozen { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+.item-category.canned { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.item-category.dairy { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.item-category.meat { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.item-category.spice { background: linear-gradient(135deg, #f97316, #ea580c); }
+
+.item-info h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.5rem 0;
+}
+
+.category-badge {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #374151;
+    font-size: 1rem;
+}
+
+.detail-item i {
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.expiry-date.expired {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.delete-form {
+    padding: 2rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.btn-cancel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #e5e7eb;
+    color: #111827;
+    text-decoration: none;
+}
+
+.btn-delete {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .delete-container {
+        padding: 1rem;
+    }
+    
+    .delete-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .header-text h1 {
+        font-size: 2rem;
+    }
+    
+    .warning-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-cancel,
+    .btn-delete {
+        justify-content: center;
+    }
+}
+</style>
+
+@functions {
+    string GetCategoryIcon(string category)
+    {
+        return category.ToLower() switch
+        {
+            "fresh" => "leaf",
+            "dry" => "wheat",
+            "frozen" => "snowflake",
+            "canned" => "package",
+            "dairy" => "milk",
+            "meat" => "drumstick",
+            "spice" => "pepper",
+            _ => "package"
+        };
+    }
+
+    string GetCategoryName(string category)
+    {
+        return category.ToLower() switch
+        {
+            "fresh" => "Taze",
+            "dry" => "Kuru",
+            "frozen" => "Dondurulmuş",
+            "canned" => "Konserve",
+            "dairy" => "Süt Ürünleri",
+            "meat" => "Et/Tavuk",
+            "spice" => "Baharat",
+            _ => category
+        };
+    }
+}

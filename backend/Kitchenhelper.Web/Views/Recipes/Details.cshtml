@@ -1,0 +1,65 @@
+@model Kitchenhelper.Core.Entities.Recipe
+
+@{
+    // Burada q'yu direk ViewData veya Query'den çekiyoruz
+    var qFromSearch = Context?.Request?.Query["q"].ToString();
+    var hasSearchContext = !string.IsNullOrWhiteSpace(qFromSearch);
+}
+
+<h2>@Model.Title</h2>
+<p class="text-muted">@Model.Description</p>
+
+<h5>Ingredients</h5>
+
+@if (hasSearchContext)
+{
+    var haveList = (qFromSearch ?? "")
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Select(s => s.Trim().ToLowerInvariant())
+        .ToHashSet();
+    
+    var neededList = Model.RecipeIngredients
+        .Select(ri => ri.Ingredient.Name.Trim().ToLowerInvariant())
+        .Distinct()
+        .ToList();
+    
+    var missingList = neededList.Where(n => !haveList.Contains(n)).ToList();
+    
+    <div class="alert alert-success mb-3">
+        <strong>Elinizde olan:</strong> @(haveList.Count > 0 ? string.Join(", ", haveList) : "Hiç")
+    </div>
+    
+    @if (missingList.Count > 0)
+    {
+        <div class="alert alert-warning mb-3">
+            <strong>Eksik olan:</strong> @string.Join(", ", missingList)
+        </div>
+    }
+    
+    <form asp-controller="ShoppingList" asp-action="AddMissing" method="post" class="mt-3">
+        <input type="hidden" name="recipeId" value="@Model.Id" />
+        <input type="hidden" name="q" value="@qFromSearch" />
+
+        <button class="btn btn-success">Eksikleri alışveriş listesine ekle</button>
+        <a asp-controller="ShoppingList" asp-action="Index" class="btn btn-outline-secondary ms-2">Listeyi gör</a>
+    </form>
+}
+else
+{
+    <div class="alert alert-info mt-3">
+        <strong>Not:</strong> Bu tarifi alışveriş listesine eklemek için önce arama sayfasından gelin.
+        <a asp-action="Search" class="btn btn-sm btn-outline-primary ms-2">Arama sayfasına git</a>
+    </div>
+}
+
+<ul>
+    @foreach (var i in Model.RecipeIngredients)
+    {
+    <li>@i.Ingredient.Name</li>
+    }
+</ul>
+
+
+<pre>@Model.StepsMarkdown</pre>
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>

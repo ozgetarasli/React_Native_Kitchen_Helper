@@ -1,0 +1,57 @@
+@model IEnumerable<Kitchenhelper.Core.Models.RecipeMatch>
+    @{
+    ViewData["Title"] = "Search";
+    var q = (string?)ViewBag.Query ?? "";
+    }
+    <h2 class="mb-3">Search Results</h2>
+
+    <form class="row g-2 mb-3" method="get">
+        <div class="col-auto">
+            <input name="q" value="@q" class="form-control" placeholder="domates, peynir, yumurta" />
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">Search</button>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">All recipes</a>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+{
+    <div class="alert alert-info">No recipes found. Try adding fewer or different ingredients.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        @foreach (var m in Model)
+  {
+    var r = m.Recipe;
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">@r.Title</h5>
+                        <span class="badge @(m.MissingIngredients.Count==0 ? "bg-success" : "bg-warning text-dark")">
+                            @(m.MissingIngredients.Count==0 ? "All ingredients" : $"{m.MissingIngredients.Count} missing")
+                        </span>
+                    </div>
+                    <p class="text-muted">@r.Description</p>
+                    <p class="small mb-1">
+                        <strong>Ingredients:</strong>
+                        @string.Join(", ", r.RecipeIngredients.Select(i => i.Ingredient.Name))
+                    </p>
+
+                    @if (m.MissingIngredients.Count > 0)
+          {
+                    <p class="small text-danger mb-2">
+                        <strong>Missing:</strong> @string.Join(", ", m.MissingIngredients)
+                    </p>
+          }
+
+                    <a asp-action="Details" asp-route-id="@r.Id" asp-route-q="@ViewBag.Query" class="btn btn-outline-primary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-warning btn-sm">Edit</a>
+                </div>
+            </div>
+        </div>
+  }
+    </div>
+}

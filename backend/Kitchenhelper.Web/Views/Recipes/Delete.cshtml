@@ -1,0 +1,13 @@
+@model Kitchenhelper.Core.Entities.Recipe
+@{
+  ViewData["Title"] = "Delete Recipe";
+}
+<h2>Delete Recipe</h2>
+<div class="alert alert-warning">
+    <p><strong>@Model.Title</strong> silinsin mi?</p>
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button class="btn btn-danger" type="submit">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>

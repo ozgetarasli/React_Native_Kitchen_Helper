@@ -1,0 +1,31 @@
+@model IEnumerable<Kitchenhelper.Core.Entities.Recipe>
+
+@{
+    ViewData["Title"] = "Recipes";
+}
+
+<h2 class="mb-4">All Recipes</h2>
+
+@if (!Model.Any())
+{
+    <p>No recipes found. Add one from the “Add Recipe” page!</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var recipe in Model)
+        {
+            <div class="col">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@recipe.Title</h5>
+                        <p class="card-text text-muted">@recipe.Description</p>
+                        <a asp-action="Details" asp-route-id="@recipe.Id" class="btn btn-primary btn-sm mt-2">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

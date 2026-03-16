@@ -1,0 +1,113 @@
+{
+  "title": "Portakallı İrmik Helvası",
+  "servings": null,
+  "prepTimeMin": null,
+  "cookTimeMin": null,
+  "totalTimeMin": null,
+  "ingredients": [
+    {
+      "name": "irmik",
+      "quantity": 1,
+      "unit": "su bardağı",
+      "note": null,
+      "flags": null
+    },
+    {
+      "name": "şeker",
+      "quantity": 1,
+      "unit": "su bardağı",
+      "note": null,
+      "flags": null
+    },
+    {
+      "name": "süt",
+      "quantity": 1,
+      "unit": "su bardağı",
+      "note": null,
+      "flags": null
+    },
+    {
+      "name": "taze portakalın suyu",
+      "quantity": 0.5,
+      "unit": "su bardağı",
+      "note": null,
+      "flags": null
+    },
+    {
+      "name": "portakal kabuğunun rendesi",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "flags": {
+        "missingUnit": true,
+        "originalText": null
+      }
+    },
+    {
+      "name": "tereyağı",
+      "quantity": 3,
+      "unit": "yemek kaşığı",
+      "note": null,
+      "flags": null
+    },
+    {
+      "name": "vanilyalı dondurma",
+      "quantity": null,
+      "unit": null,
+      "note": "Servis için",
+      "flags": {
+        "missingUnit": true,
+        "originalText": null
+      }
+    }
+  ],
+  "steps": [
+    {
+      "order": 1,
+      "text": "Tereyağını bir tavada eritiyoruz üzerine irmiği ekleyip 15 dk kavuruyoruz.",
+      "timeHintMin": 15,
+      "flags": null
+    },
+    {
+      "order": 2,
+      "text": "Bir yandan cezvede süt,portakal suyu ve şekeri ısıtıyoruz.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true
+      }
+    },
+    {
+      "order": 3,
+      "text": "Kavrulan irmiğin üzerine döküyoruz ve fokurdarken iyice karıştırıyoruz.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true
+      }
+    },
+    {
+      "order": 4,
+      "text": "Helva yoğunlaşınca olmuş demektir.Üzerine portakal kabuğunun rendesini ekleyip karıştırıyoruz.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true
+      }
+    },
+    {
+      "order": 5,
+      "text": "Bir kaseye streç filmle kaplayıp bir miktar helvadan koyup tabana bastırıyoruz.Bir top dondurma koyup üzerini helvayla kapıyoruz.Tabak yardımıyla ters çeviriyoruz.",
+      "timeHintMin": null,
+      "flags": {
+        "missingTime": true
+      }
+    }
+  ],
+  "tips": [],
+  "calories": null,
+  "protein": null,
+  "fat": null,
+  "carbs": null,
+  "sourceNotes": {
+    "language": "tr",
+    "confidence": 1.0
+  }
+}

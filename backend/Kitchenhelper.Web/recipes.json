@@ -1,0 +1,730 @@
+[
+  {
+    "title": "Classic Spaghetti Carbonara",
+    "description": "Authentic Italian pasta with creamy egg sauce, crispy pancetta, and Parmesan cheese",
+    "prepTime": "25 mins",
+    "servings": 4,
+    "categories": ["Lunch", "Dinner"],
+    "image": "/uploads/carbonara.jpg",
+    "recipeIngredients": [
+      {
+        "ingredient": { "name": "Spaghetti" },
+        "quantity": 400,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Pancetta" },
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Eggs" },
+        "quantity": 4,
+        "unit": "pieces"
+      },
+      {
+        "ingredient": { "name": "Parmesan cheese" },
+        "quantity": 100,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Black pepper" },
+        "quantity": 1,
+        "unit": "tsp"
+      }
+    ],
+    "instructions": [
+      "Cook spaghetti in salted boiling water until al dente",
+      "Meanwhile, fry pancetta in a large pan until crispy",
+      "Beat eggs with grated Parmesan and black pepper",
+      "Drain pasta, reserving 1 cup pasta water",
+      "Add hot pasta to pancetta pan, remove from heat",
+      "Quickly stir in egg mixture, adding pasta water to create creamy sauce",
+      "Serve immediately with extra Parmesan"
+    ]
+  },
+  {
+    "title": "Chicken Tikka Masala",
+    "description": "Tender chicken in a rich, creamy tomato-based curry sauce with aromatic spices",
+    "prepTime": "45 mins",
+    "servings": 6,
+    "categories": ["Dinner"],
+    "image": "/uploads/tikka-masala.jpg",
+    "recipeIngredients": [
+      {
+        "ingredient": { "name": "Chicken breast" },
+        "quantity": 800,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Yogurt" },
+        "quantity": 200,
+        "unit": "ml"
+      },
+      {
+        "ingredient": { "name": "Tomato sauce" },
+        "quantity": 400,
+        "unit": "ml"
+      },
+      {
+        "ingredient": { "name": "Heavy cream" },
+        "quantity": 200,
+        "unit": "ml"
+      },
+      {
+        "ingredient": { "name": "Garam masala" },
+        "quantity": 2,
+        "unit": "tbsp"
+      },
+      {
+        "ingredient": { "name": "Ginger-garlic paste" },
+        "quantity": 2,
+        "unit": "tbsp"
+      }
+    ],
+    "instructions": [
+      "Marinate chicken in yogurt and spices for 30 minutes",
+      "Grill or pan-fry chicken until cooked through",
+      "In a separate pan, sauté onions and ginger-garlic paste",
+      "Add tomato sauce and spices, simmer for 10 minutes",
+      "Stir in cream and cooked chicken",
+      "Simmer for 15 minutes until sauce thickens",
+      "Serve with rice or naan bread"
+    ]
+  },
+  {
+    "title": "Chocolate Chip Cookies",
+    "description": "Soft, chewy cookies loaded with chocolate chips - perfect for dessert or snacking",
+    "prepTime": "30 mins",
+    "servings": 24,
+    "categories": ["Dessert", "Snack"],
+    "image": "/uploads/cookies.jpg",
+    "recipeIngredients": [
+      {
+        "ingredient": { "name": "All-purpose flour" },
+        "quantity": 280,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Butter" },
+        "quantity": 225,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Brown sugar" },
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "White sugar" },
+        "quantity": 100,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Eggs" },
+        "quantity": 2,
+        "unit": "pieces"
+      },
+      {
+        "ingredient": { "name": "Chocolate chips" },
+        "quantity": 340,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Vanilla extract" },
+        "quantity": 2,
+        "unit": "tsp"
+      }
+    ],
+    "instructions": [
+      "Preheat oven to 375°F (190°C)",
+      "Cream together butter and both sugars until fluffy",
+      "Beat in eggs and vanilla extract",
+      "Mix in flour, baking soda, and salt",
+      "Fold in chocolate chips",
+      "Drop spoonfuls onto baking sheet",
+      "Bake 9-11 minutes until golden brown",
+      "Cool on wire rack"
+    ]
+  },
+  {
+    "title": "Greek Salad",
+    "description": "Fresh Mediterranean salad with cucumbers, tomatoes, olives, and feta cheese",
+    "prepTime": "15 mins",
+    "servings": 4,
+    "categories": ["Lunch", "Vegetarian"],
+    "image": "/uploads/greek-salad.jpg",
+    "recipeIngredients": [
+      {
+        "ingredient": { "name": "Cucumbers" },
+        "quantity": 2,
+        "unit": "pieces"
+      },
+      {
+        "ingredient": { "name": "Tomatoes" },
+        "quantity": 4,
+        "unit": "pieces"
+      },
+      {
+        "ingredient": { "name": "Red onion" },
+        "quantity": 1,
+        "unit": "piece"
+      },
+      {
+        "ingredient": { "name": "Feta cheese" },
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Kalamata olives" },
+        "quantity": 150,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Olive oil" },
+        "quantity": 4,
+        "unit": "tbsp"
+      },
+      {
+        "ingredient": { "name": "Lemon juice" },
+        "quantity": 2,
+        "unit": "tbsp"
+      }
+    ],
+    "instructions": [
+      "Chop cucumbers and tomatoes into bite-sized pieces",
+      "Slice red onion thinly",
+      "Combine vegetables in a large bowl",
+      "Add olives and crumbled feta cheese",
+      "Drizzle with olive oil and lemon juice",
+      "Season with oregano, salt, and pepper",
+      "Toss gently and serve immediately"
+    ]
+  },
+  {
+    "title": "Blueberry Pancakes",
+    "description": "Fluffy breakfast pancakes bursting with fresh blueberries",
+    "prepTime": "20 mins",
+    "servings": 4,
+    "categories": ["Breakfast"],
+    "image": "/uploads/pancakes.jpg",
+    "recipeIngredients": [
+      {
+        "ingredient": { "name": "All-purpose flour" },
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Milk" },
+        "quantity": 300,
+        "unit": "ml"
+      },
+      {
+        "ingredient": { "name": "Eggs" },
+        "quantity": 2,
+        "unit": "pieces"
+      },
+      {
+        "ingredient": { "name": "Blueberries" },
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredient": { "name": "Baking powder" },
+        "quantity": 2,
+        "unit": "tsp"
+      },
+      {
+        "ingredient": { "name": "Sugar" },
+        "quantity": 2,
+        "unit": "tbsp"
+      }
+    ],
+    "instructions": [
+      "Mix flour, baking powder, and sugar in a bowl",
+      "Whisk together milk and eggs",
+      "Combine wet and dry ingredients until just mixed",
+      "Gently fold in blueberries",
+      "Heat a greased pan over medium heat",
+      "Pour batter to form pancakes",
+      "Cook until bubbles form, flip and cook other side",
+      "Serve warm with maple syrup"
+    ]
+  },
+  {
+    "title": "Beef Tacos",
+    "description": "Authentic Mexican tacos with seasoned ground beef, fresh toppings, and warm tortillas",
+    "prepTime": "25 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Lunch"],
+    "image": "/uploads/tacos.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Ground beef" }, "quantity": 500, "unit": "g" },
+      { "ingredient": { "name": "Taco seasoning" }, "quantity": 2, "unit": "tbsp" },
+      { "ingredient": { "name": "Corn tortillas" }, "quantity": 8, "unit": "pieces" },
+      { "ingredient": { "name": "Cheddar cheese" }, "quantity": 150, "unit": "g" },
+      { "ingredient": { "name": "Lettuce" }, "quantity": 1, "unit": "head" },
+      { "ingredient": { "name": "Tomatoes" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Sour cream" }, "quantity": 100, "unit": "ml" }
+    ],
+    "instructions": [
+      "Brown ground beef in a large pan",
+      "Add taco seasoning and water, simmer 5 minutes",
+      "Warm tortillas in a dry pan",
+      "Shred lettuce and dice tomatoes",
+      "Grate cheese",
+      "Assemble tacos with meat, toppings, and sour cream"
+    ]
+  },
+  {
+    "title": "Caesar Salad",
+    "description": "Classic Caesar salad with crisp romaine, creamy dressing, croutons, and Parmesan",
+    "prepTime": "15 mins",
+    "servings": 4,
+    "categories": ["Lunch", "Vegetarian"],
+    "image": "/uploads/caesar-salad.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Romaine lettuce" }, "quantity": 2, "unit": "heads" },
+      { "ingredient": { "name": "Parmesan cheese" }, "quantity": 100, "unit": "g" },
+      { "ingredient": { "name": "Croutons" }, "quantity": 150, "unit": "g" },
+      { "ingredient": { "name": "Caesar dressing" }, "quantity": 150, "unit": "ml" },
+      { "ingredient": { "name": "Lemon juice" }, "quantity": 2, "unit": "tbsp" },
+      { "ingredient": { "name": "Garlic" }, "quantity": 2, "unit": "cloves" }
+    ],
+    "instructions": [
+      "Wash and chop romaine lettuce",
+      "Shave Parmesan cheese",
+      "Toss lettuce with Caesar dressing",
+      "Add croutons and toss again",
+      "Top with shaved Parmesan",
+      "Serve immediately"
+    ]
+  },
+  {
+    "title": "Mushroom Risotto",
+    "description": "Creamy Italian risotto with sautéed mushrooms and Parmesan cheese",
+    "prepTime": "40 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Vegetarian"],
+    "image": "/uploads/risotto.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Arborio rice" }, "quantity": 300, "unit": "g" },
+      { "ingredient": { "name": "Mixed mushrooms" }, "quantity": 400, "unit": "g" },
+      { "ingredient": { "name": "Vegetable broth" }, "quantity": 1000, "unit": "ml" },
+      { "ingredient": { "name": "White wine" }, "quantity": 150, "unit": "ml" },
+      { "ingredient": { "name": "Parmesan cheese" }, "quantity": 100, "unit": "g" },
+      { "ingredient": { "name": "Butter" }, "quantity": 50, "unit": "g" },
+      { "ingredient": { "name": "Onion" }, "quantity": 1, "unit": "piece" }
+    ],
+    "instructions": [
+      "Sauté mushrooms in butter, set aside",
+      "Cook onion in butter until soft",
+      "Add rice and toast for 2 minutes",
+      "Add wine and stir until absorbed",
+      "Gradually add warm broth, stirring constantly",
+      "Stir in mushrooms and Parmesan",
+      "Season and serve immediately"
+    ]
+  },
+  {
+    "title": "Grilled Salmon",
+    "description": "Perfectly grilled salmon fillet with lemon herb butter sauce",
+    "prepTime": "20 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Lunch"],
+    "image": "/uploads/salmon.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Salmon fillets" }, "quantity": 800, "unit": "g" },
+      { "ingredient": { "name": "Butter" }, "quantity": 100, "unit": "g" },
+      { "ingredient": { "name": "Lemon" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Fresh dill" }, "quantity": 3, "unit": "tbsp" },
+      { "ingredient": { "name": "Garlic" }, "quantity": 3, "unit": "cloves" },
+      { "ingredient": { "name": "Olive oil" }, "quantity": 2, "unit": "tbsp" }
+    ],
+    "instructions": [
+      "Season salmon with salt and pepper",
+      "Brush with olive oil",
+      "Grill over medium-high heat 4-5 minutes per side",
+      "Melt butter with garlic and lemon juice",
+      "Add fresh dill to butter sauce",
+      "Drizzle sauce over grilled salmon"
+    ]
+  },
+  {
+    "title": "Vegetable Stir Fry",
+    "description": "Quick and healthy Asian-style stir fry with colorful vegetables",
+    "prepTime": "20 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Vegan", "Vegetarian"],
+    "image": "/uploads/stir-fry.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Broccoli" }, "quantity": 300, "unit": "g" },
+      { "ingredient": { "name": "Bell peppers" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Carrots" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Soy sauce" }, "quantity": 4, "unit": "tbsp" },
+      { "ingredient": { "name": "Sesame oil" }, "quantity": 2, "unit": "tbsp" },
+      { "ingredient": { "name": "Ginger" }, "quantity": 2, "unit": "tbsp" },
+      { "ingredient": { "name": "Garlic" }, "quantity": 4, "unit": "cloves" }
+    ],
+    "instructions": [
+      "Cut all vegetables into bite-sized pieces",
+      "Heat sesame oil in a wok over high heat",
+      "Add garlic and ginger, stir 30 seconds",
+      "Add hard vegetables first (carrots, broccoli)",
+      "Add softer vegetables (peppers)",
+      "Add soy sauce and toss well",
+      "Serve over rice"
+    ]
+  },
+  {
+    "title": "Banana Bread",
+    "description": "Moist and delicious homemade banana bread with walnuts",
+    "prepTime": "60 mins",
+    "servings": 8,
+    "categories": ["Breakfast", "Dessert", "Snack"],
+    "image": "/uploads/banana-bread.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Ripe bananas" }, "quantity": 3, "unit": "pieces" },
+      { "ingredient": { "name": "All-purpose flour" }, "quantity": 280, "unit": "g" },
+      { "ingredient": { "name": "Sugar" }, "quantity": 150, "unit": "g" },
+      { "ingredient": { "name": "Butter" }, "quantity": 115, "unit": "g" },
+      { "ingredient": { "name": "Eggs" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Walnuts" }, "quantity": 100, "unit": "g" },
+      { "ingredient": { "name": "Baking soda" }, "quantity": 1, "unit": "tsp" }
+    ],
+    "instructions": [
+      "Preheat oven to 350°F (175°C)",
+      "Mash bananas in a large bowl",
+      "Mix in melted butter",
+      "Add sugar, beaten eggs, and vanilla",
+      "Mix in flour and baking soda",
+      "Fold in chopped walnuts",
+      "Pour into greased loaf pan",
+      "Bake 60 minutes until golden"
+    ]
+  },
+  {
+    "title": "Tomato Soup",
+    "description": "Classic creamy tomato soup perfect for cold days",
+    "prepTime": "35 mins",
+    "servings": 6,
+    "categories": ["Lunch", "Vegetarian"],
+    "image": "/uploads/tomato-soup.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Canned tomatoes" }, "quantity": 800, "unit": "g" },
+      { "ingredient": { "name": "Onion" }, "quantity": 1, "unit": "piece" },
+      { "ingredient": { "name": "Vegetable broth" }, "quantity": 500, "unit": "ml" },
+      { "ingredient": { "name": "Heavy cream" }, "quantity": 100, "unit": "ml" },
+      { "ingredient": { "name": "Garlic" }, "quantity": 3, "unit": "cloves" },
+      { "ingredient": { "name": "Basil" }, "quantity": 2, "unit": "tbsp" }
+    ],
+    "instructions": [
+      "Sauté onion and garlic until soft",
+      "Add canned tomatoes and broth",
+      "Simmer for 20 minutes",
+      "Blend until smooth",
+      "Stir in cream and basil",
+      "Season with salt and pepper",
+      "Serve with crusty bread"
+    ]
+  },
+  {
+    "title": "Chicken Alfredo",
+    "description": "Creamy fettuccine Alfredo with grilled chicken breast",
+    "prepTime": "30 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Lunch"],
+    "image": "/uploads/alfredo.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Fettuccine pasta" }, "quantity": 400, "unit": "g" },
+      { "ingredient": { "name": "Chicken breast" }, "quantity": 500, "unit": "g" },
+      { "ingredient": { "name": "Heavy cream" }, "quantity": 400, "unit": "ml" },
+      { "ingredient": { "name": "Parmesan cheese" }, "quantity": 150, "unit": "g" },
+      { "ingredient": { "name": "Butter" }, "quantity": 60, "unit": "g" },
+      { "ingredient": { "name": "Garlic" }, "quantity": 4, "unit": "cloves" }
+    ],
+    "instructions": [
+      "Season and grill chicken until cooked through",
+      "Cook fettuccine according to package directions",
+      "Melt butter and sauté garlic",
+      "Add cream and simmer 5 minutes",
+      "Stir in Parmesan until melted",
+      "Slice chicken and add to sauce",
+      "Toss with pasta and serve"
+    ]
+  },
+  {
+    "title": "French Omelette",
+    "description": "Classic French-style omelette with herbs and cheese",
+    "prepTime": "10 mins",
+    "servings": 1,
+    "categories": ["Breakfast"],
+    "image": "/uploads/omelette.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Eggs" }, "quantity": 3, "unit": "pieces" },
+      { "ingredient": { "name": "Butter" }, "quantity": 30, "unit": "g" },
+      { "ingredient": { "name": "Gruyère cheese" }, "quantity": 50, "unit": "g" },
+      { "ingredient": { "name": "Fresh chives" }, "quantity": 2, "unit": "tbsp" },
+      { "ingredient": { "name": "Salt" }, "quantity": 1, "unit": "pinch" },
+      { "ingredient": { "name": "Pepper" }, "quantity": 1, "unit": "pinch" }
+    ],
+    "instructions": [
+      "Beat eggs with salt and pepper",
+      "Heat butter in non-stick pan",
+      "Pour in eggs, stir gently",
+      "Add cheese when almost set",
+      "Fold omelette in thirds",
+      "Slide onto plate and garnish with chives"
+    ]
+  },
+  {
+    "title": "BBQ Chicken Pizza",
+    "description": "Homemade pizza with BBQ sauce, chicken, red onion, and cilantro",
+    "prepTime": "35 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Lunch"],
+    "image": "/uploads/bbq-pizza.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Pizza dough" }, "quantity": 500, "unit": "g" },
+      { "ingredient": { "name": "BBQ sauce" }, "quantity": 150, "unit": "ml" },
+      { "ingredient": { "name": "Cooked chicken" }, "quantity": 300, "unit": "g" },
+      { "ingredient": { "name": "Mozzarella cheese" }, "quantity": 200, "unit": "g" },
+      { "ingredient": { "name": "Red onion" }, "quantity": 1, "unit": "piece" },
+      { "ingredient": { "name": "Fresh cilantro" }, "quantity": 3, "unit": "tbsp" }
+    ],
+    "instructions": [
+      "Preheat oven to 450°F (230°C)",
+      "Roll out pizza dough",
+      "Spread BBQ sauce evenly",
+      "Add shredded chicken and sliced onion",
+      "Top with mozzarella cheese",
+      "Bake 12-15 minutes until golden",
+      "Top with fresh cilantro"
+    ]
+  },
+  {
+    "title": "Shrimp Scampi",
+    "description": "Garlic butter shrimp served over linguine pasta",
+    "prepTime": "25 mins",
+    "servings": 4,
+    "categories": ["Dinner"],
+    "image": "/uploads/shrimp-scampi.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Large shrimp" }, "quantity": 500, "unit": "g" },
+      { "ingredient": { "name": "Linguine pasta" }, "quantity": 350, "unit": "g" },
+      { "ingredient": { "name": "Butter" }, "quantity": 100, "unit": "g" },
+      { "ingredient": { "name": "Garlic" }, "quantity": 6, "unit": "cloves" },
+      { "ingredient": { "name": "White wine" }, "quantity": 150, "unit": "ml" },
+      { "ingredient": { "name": "Lemon" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Parsley" }, "quantity": 4, "unit": "tbsp" }
+    ],
+    "instructions": [
+      "Cook linguine until al dente",
+      "Sauté garlic in butter",
+      "Add shrimp and cook 2 minutes per side",
+      "Pour in wine and lemon juice",
+      "Toss with pasta",
+      "Garnish with parsley and serve"
+    ]
+  },
+  {
+    "title": "Avocado Toast",
+    "description": "Trendy and nutritious breakfast with creamy avocado on sourdough",
+    "prepTime": "10 mins",
+    "servings": 2,
+    "categories": ["Breakfast", "Vegetarian", "Vegan"],
+    "image": "/uploads/avocado-toast.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Sourdough bread" }, "quantity": 4, "unit": "slices" },
+      { "ingredient": { "name": "Ripe avocados" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Cherry tomatoes" }, "quantity": 100, "unit": "g" },
+      { "ingredient": { "name": "Red pepper flakes" }, "quantity": 1, "unit": "tsp" },
+      { "ingredient": { "name": "Lemon juice" }, "quantity": 1, "unit": "tbsp" },
+      { "ingredient": { "name": "Salt" }, "quantity": 1, "unit": "tsp" }
+    ],
+    "instructions": [
+      "Toast sourdough slices until golden",
+      "Mash avocados with lemon juice and salt",
+      "Spread avocado on toast",
+      "Top with halved cherry tomatoes",
+      "Sprinkle with red pepper flakes",
+      "Drizzle with olive oil and serve"
+    ]
+  },
+  {
+    "title": "Beef Stroganoff",
+    "description": "Tender beef strips in a creamy mushroom sauce over egg noodles",
+    "prepTime": "35 mins",
+    "servings": 4,
+    "categories": ["Dinner"],
+    "image": "/uploads/stroganoff.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Beef sirloin" }, "quantity": 600, "unit": "g" },
+      { "ingredient": { "name": "Egg noodles" }, "quantity": 350, "unit": "g" },
+      { "ingredient": { "name": "Mushrooms" }, "quantity": 300, "unit": "g" },
+      { "ingredient": { "name": "Sour cream" }, "quantity": 200, "unit": "ml" },
+      { "ingredient": { "name": "Beef broth" }, "quantity": 250, "unit": "ml" },
+      { "ingredient": { "name": "Onion" }, "quantity": 1, "unit": "piece" }
+    ],
+    "instructions": [
+      "Slice beef into thin strips",
+      "Brown beef in batches, set aside",
+      "Sauté onions and mushrooms",
+      "Add broth and simmer",
+      "Stir in sour cream",
+      "Return beef to pan",
+      "Serve over egg noodles"
+    ]
+  },
+  {
+    "title": "Caprese Salad",
+    "description": "Simple Italian salad with fresh mozzarella, tomatoes, and basil",
+    "prepTime": "10 mins",
+    "servings": 4,
+    "categories": ["Lunch", "Vegetarian", "Snack"],
+    "image": "/uploads/caprese.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Fresh mozzarella" }, "quantity": 400, "unit": "g" },
+      { "ingredient": { "name": "Tomatoes" }, "quantity": 4, "unit": "pieces" },
+      { "ingredient": { "name": "Fresh basil" }, "quantity": 1, "unit": "bunch" },
+      { "ingredient": { "name": "Olive oil" }, "quantity": 4, "unit": "tbsp" },
+      { "ingredient": { "name": "Balsamic glaze" }, "quantity": 2, "unit": "tbsp" },
+      { "ingredient": { "name": "Salt" }, "quantity": 1, "unit": "tsp" }
+    ],
+    "instructions": [
+      "Slice mozzarella and tomatoes",
+      "Arrange alternating on a plate",
+      "Tuck basil leaves between slices",
+      "Drizzle with olive oil",
+      "Add balsamic glaze",
+      "Season with salt and pepper"
+    ]
+  },
+  {
+    "title": "Lemon Garlic Chicken",
+    "description": "Juicy roasted chicken with bright lemon and garlic flavors",
+    "prepTime": "50 mins",
+    "servings": 6,
+    "categories": ["Dinner"],
+    "image": "/uploads/lemon-chicken.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Chicken thighs" }, "quantity": 8, "unit": "pieces" },
+      { "ingredient": { "name": "Lemons" }, "quantity": 3, "unit": "pieces" },
+      { "ingredient": { "name": "Garlic" }, "quantity": 8, "unit": "cloves" },
+      { "ingredient": { "name": "Olive oil" }, "quantity": 4, "unit": "tbsp" },
+      { "ingredient": { "name": "Fresh thyme" }, "quantity": 4, "unit": "sprigs" },
+      { "ingredient": { "name": "Chicken broth" }, "quantity": 200, "unit": "ml" }
+    ],
+    "instructions": [
+      "Preheat oven to 425°F (220°C)",
+      "Season chicken with salt and pepper",
+      "Sear chicken skin-side down until golden",
+      "Flip and add garlic and lemon slices",
+      "Pour in broth and add thyme",
+      "Roast 25-30 minutes until cooked through"
+    ]
+  },
+  {
+    "title": "Chocolate Mousse",
+    "description": "Light and airy French chocolate mousse with whipped cream",
+    "prepTime": "30 mins",
+    "servings": 6,
+    "categories": ["Dessert"],
+    "image": "/uploads/chocolate-mousse.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Dark chocolate" }, "quantity": 200, "unit": "g" },
+      { "ingredient": { "name": "Heavy cream" }, "quantity": 300, "unit": "ml" },
+      { "ingredient": { "name": "Eggs" }, "quantity": 4, "unit": "pieces" },
+      { "ingredient": { "name": "Sugar" }, "quantity": 50, "unit": "g" },
+      { "ingredient": { "name": "Vanilla extract" }, "quantity": 1, "unit": "tsp" },
+      { "ingredient": { "name": "Salt" }, "quantity": 1, "unit": "pinch" }
+    ],
+    "instructions": [
+      "Melt chocolate and let cool slightly",
+      "Separate eggs, beat yolks with sugar",
+      "Whip cream to soft peaks",
+      "Beat egg whites until stiff",
+      "Fold chocolate into yolks",
+      "Fold in whipped cream, then egg whites",
+      "Chill at least 4 hours before serving"
+    ]
+  },
+  {
+    "title": "Minestrone Soup",
+    "description": "Hearty Italian vegetable soup with pasta and beans",
+    "prepTime": "45 mins",
+    "servings": 8,
+    "categories": ["Lunch", "Dinner", "Vegetarian", "Vegan"],
+    "image": "/uploads/minestrone.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Cannellini beans" }, "quantity": 400, "unit": "g" },
+      { "ingredient": { "name": "Ditalini pasta" }, "quantity": 150, "unit": "g" },
+      { "ingredient": { "name": "Zucchini" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Carrots" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Celery" }, "quantity": 3, "unit": "stalks" },
+      { "ingredient": { "name": "Vegetable broth" }, "quantity": 1500, "unit": "ml" },
+      { "ingredient": { "name": "Canned tomatoes" }, "quantity": 400, "unit": "g" }
+    ],
+    "instructions": [
+      "Sauté onion, carrots, and celery",
+      "Add zucchini and cook 3 minutes",
+      "Pour in broth and tomatoes",
+      "Simmer 20 minutes",
+      "Add pasta and beans",
+      "Cook until pasta is tender",
+      "Season and serve with Parmesan"
+    ]
+  },
+  {
+    "title": "Fish and Chips",
+    "description": "Classic British pub dish with crispy battered fish and thick-cut fries",
+    "prepTime": "40 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Lunch"],
+    "image": "/uploads/fish-chips.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Cod fillets" }, "quantity": 600, "unit": "g" },
+      { "ingredient": { "name": "Potatoes" }, "quantity": 800, "unit": "g" },
+      { "ingredient": { "name": "All-purpose flour" }, "quantity": 200, "unit": "g" },
+      { "ingredient": { "name": "Beer" }, "quantity": 250, "unit": "ml" },
+      { "ingredient": { "name": "Baking powder" }, "quantity": 1, "unit": "tsp" },
+      { "ingredient": { "name": "Vegetable oil" }, "quantity": 1, "unit": "L" }
+    ],
+    "instructions": [
+      "Cut potatoes into thick chips",
+      "Fry chips at 325°F until soft, drain",
+      "Mix flour, baking powder, and beer for batter",
+      "Season fish and coat in batter",
+      "Fry fish at 375°F until golden",
+      "Fry chips again until crispy",
+      "Serve with tartar sauce and lemon"
+    ]
+  },
+  {
+    "title": "Pad Thai",
+    "description": "Classic Thai stir-fried rice noodles with shrimp, peanuts, and lime",
+    "prepTime": "30 mins",
+    "servings": 4,
+    "categories": ["Dinner", "Lunch"],
+    "image": "/uploads/pad-thai.jpg",
+    "recipeIngredients": [
+      { "ingredient": { "name": "Rice noodles" }, "quantity": 300, "unit": "g" },
+      { "ingredient": { "name": "Shrimp" }, "quantity": 300, "unit": "g" },
+      { "ingredient": { "name": "Eggs" }, "quantity": 2, "unit": "pieces" },
+      { "ingredient": { "name": "Bean sprouts" }, "quantity": 200, "unit": "g" },
+      { "ingredient": { "name": "Peanuts" }, "quantity": 100, "unit": "g" },
+      { "ingredient": { "name": "Fish sauce" }, "quantity": 3, "unit": "tbsp" },
+      { "ingredient": { "name": "Tamarind paste" }, "quantity": 2, "unit": "tbsp" },
+      { "ingredient": { "name": "Lime" }, "quantity": 2, "unit": "pieces" }
+    ],
+    "instructions": [
+      "Soak rice noodles in warm water",
+      "Mix fish sauce, tamarind, and sugar for sauce",
+      "Stir-fry shrimp, set aside",
+      "Scramble eggs in wok",
+      "Add drained noodles and sauce",
+      "Toss with shrimp and bean sprouts",
+      "Serve with peanuts and lime wedges"
+    ]
+  }
+]

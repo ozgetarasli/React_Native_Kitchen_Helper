@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<!-- Dashboard Page -->
+<div id="dashboard" class="page active">
+    <div class="page-header">
+        <h1>Bugün ne pişiriyoruz?</h1>
+        <p>Elinizdeki malzemelerle harika yemekler yapın</p>
+    </div>
+
+    <!-- Quick Access Cards -->
+    <div class="quick-access">
+        <div class="quick-card" onclick="window.location.href='/Recipes/Create'">
+            <div class="quick-icon">
+                <i data-lucide="plus"></i>
+            </div>
+            <h3>Yeni Tarif Ekle</h3>
+            <p>Kendi tarifinizi ekleyin</p>
+        </div>
+        <div class="quick-card" onclick="window.location.href='/Recipes/Search'">
+            <div class="quick-icon">
+                <i data-lucide="key"></i>
+            </div>
+            <h3>Malzemelerle Tarif Bul</h3>
+            <p>Elinizdeki malzemelerle uyumlu tarifleri keşfedin</p>
+        </div>
+        <div class="quick-card" onclick="window.location.href='/Pantry'">
+            <div class="quick-icon">
+                <i data-lucide="package"></i>
+            </div>
+            <h3>Kiler Yönetimi</h3>
+            <p>Elinizdeki malzemeleri yönetin ve takip edin</p>
+        </div>
+    </div>
+
+    <!-- Recommended Recipes -->
+    <div class="recommended-section">
+        <h2>Önerilen Tarifler</h2>
+        <div class="recipe-grid" id="recommendedRecipes">
+            <!-- Recommended recipes will be populated here -->
+        </div>
+    </div>
+</div>

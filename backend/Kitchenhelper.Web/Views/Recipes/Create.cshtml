@@ -1,0 +1,10 @@
+@model Kitchenhelper.Web.Models.RecipeFormVM
+@{
+  ViewData["Title"] = "Create Recipe";
+}
+<h2>Create Recipe</h2>
+<form asp-action="Create" method="post">
+    <partial name="_Form" model="Model" />
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" /> }

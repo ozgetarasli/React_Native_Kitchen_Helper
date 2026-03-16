@@ -1,0 +1,12 @@
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\bin\Release\net9.0\Kitchenhelper.Core.deps.json
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\bin\Release\net9.0\Kitchenhelper.Core.dll
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\bin\Release\net9.0\Kitchenhelper.Core.pdb
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\Kitchenhelper.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\Kitchenhelper.Core.AssemblyInfoInputs.cache
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\Kitchenhelper.Core.AssemblyInfo.cs
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\Kitchenhelper.Core.csproj.CoreCompileInputs.cache
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\Kitchenhelper.Core.sourcelink.json
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\Kitchenhelper.Core.dll
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\refint\Kitchenhelper.Core.dll
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\Kitchenhelper.Core.pdb
+C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Release\net9.0\ref\Kitchenhelper.Core.dll

@@ -1,0 +1,196 @@
+﻿using Kitchenhelper.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Kitchenhelper.Core.Services;
+using Kitchenhelper.Infrastructure.Services;
+using Kitchenhelper.Infrastructure.BackgroundServices;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.FileProviders;
+
+// Seeding kontrolü - eğer "seed" argümanı varsa seeding yap ve çık
+if (args.Length > 0 && args[0].ToLower() == "seed")
+{
+    var seedBuilder = WebApplication.CreateBuilder(args);
+    seedBuilder.Services.AddDbContext<AppDbContext>(opt =>
+        opt.UseSqlite(seedBuilder.Configuration.GetConnectionString("Default")));
+
+    var seedApp = seedBuilder.Build();
+    using var scope = seedApp.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "recipes.json");
+    var exitCode = await Kitchenhelper.Web.SeedRecipes.SeedAsync(db, jsonPath);
+    Environment.Exit(exitCode);
+}
+
+var builder = WebApplication.CreateBuilder(args);
+
+// MVC
+builder.Services.AddControllersWithViews();
+
+// CORS - React ve Flutter uygulaması için
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy
+            .SetIsOriginAllowed(_ => true) // Tüm origin'lere izin ver (geliştirme için)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()); // Cookie için gerekli
+});
+
+// EF Core + SQLite
+builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddScoped<IRecipeService, RecipeService>();
+builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
+builder.Services.AddScoped<IPantryService, PantryService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IRecipeImportService, RecipeImportService>();
+builder.Services.AddScoped<IRecipeImportProcessingService, RecipeImportProcessingService>();
+builder.Services.AddScoped<IAsrService, WhisperAsrService>();
+builder.Services.AddScoped<IVideoAudioExtractor, FFmpegAudioExtractor>();
+builder.Services.AddScoped<IUrlVideoService, UrlVideoService>();
+
+// Video download settings and anti-ban services
+builder.Services.Configure<VideoDownloadSettings>(builder.Configuration.GetSection("VideoDownload"));
+builder.Services.AddSingleton<IVideoDownloadSettings>(sp =>
+{
+    var settings = new VideoDownloadSettings();
+    builder.Configuration.GetSection("VideoDownload").Bind(settings);
+    return settings;
+});
+builder.Services.AddSingleton<IUserAgentRotator, UserAgentRotator>();
+builder.Services.AddSingleton<IRequestThrottler, RequestThrottler>();
+
+// Draft extraction and publishing services
+builder.Services.AddScoped<IRecipeDraftExtractor, GeminiDraftExtractor>();
+builder.Services.AddScoped<IRecipeDraftService, RecipeDraftService>();
+builder.Services.AddScoped<IRecipePublishService, RecipePublishService>();
+builder.Services.AddScoped<INutritionService, GeminiNutritionService>();
+builder.Services.AddScoped<IAiChatService, GeminiChatService>();
+
+// Register background worker
+builder.Services.AddHostedService<RecipeImportBackgroundWorker>();
+
+// Register HttpClientFactory for ASR service
+builder.Services.AddHttpClient();
+
+// JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "")),
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+        
+        // Cookie'den token okuma
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["auth_token"];
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+// Swagger/OpenAPI yapılandırması
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "KitchenHelper API",
+        Version = "v1",
+        Description = "KitchenHelper uygulaması için REST API servisleri",
+        Contact = new OpenApiContact
+        {
+            Name = "KitchenHelper Team"
+        }
+    });
+});
+
+var app = builder.Build();
+
+// Veritabanı migration'larını otomatik uygula ve seed et
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate(); // Migration'ları uygula
+    
+    // Eğer tarif yoksa seed et
+    if (!db.Recipes.Any())
+    {
+        var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "recipes.json");
+        if (File.Exists(jsonPath))
+        {
+            Console.WriteLine("📦 Tarifler yükleniyor...");
+            await Kitchenhelper.Web.SeedRecipes.SeedAsync(db, jsonPath);
+            Console.WriteLine("✅ Tarifler başarıyla yüklendi!");
+        }
+    }
+}
+
+// Swagger'ı etkinleştir
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "KitchenHelper API v1");
+    c.RoutePrefix = "swagger"; // Swagger UI'a /swagger adresinden erişilebilir
+});
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
+
+// CORS middleware'i - routing'den önce olmalı
+app.UseCors("AllowAll");
+
+// Static files - routing'den ÖNCE olmalı
+app.UseStaticFiles();
+
+// Serve files from the "uploads" directory at /uploads
+var uploadsPath = app.Configuration["UploadsPath"] ?? "uploads";
+var uploadsPhysicalPath = Path.Combine(Directory.GetCurrentDirectory(), uploadsPath);
+if (Directory.Exists(uploadsPhysicalPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(uploadsPhysicalPath),
+        RequestPath = "/uploads"
+    });
+}
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+// API route'ları
+app.MapControllers();
+
+// React build dosyalarını servis et
+app.UseDefaultFiles();
+
+// React SPA fallback - tüm route'ları index.html'e yönlendir
+// API route'larından sonra, MVC route'larından önce
+app.MapFallbackToFile("index.html");
+
+app.Run();
+
