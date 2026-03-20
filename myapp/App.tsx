@@ -5,6 +5,7 @@ import { RootStackParamList } from './src/types/navigation';
 
 // Import Screens
 import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import RecipeListScreen from './src/screens/RecipeListScreen';
 import RecipeDetailScreen from './src/screens/RecipeDetailScreen';
@@ -18,6 +19,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator id="RootStack" initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Kitchen Helper' }} />
         <Stack.Screen name="RecipeList" component={RecipeListScreen} options={{ title: 'Recipes' }} />
         <Stack.Screen name="RecipeDetail" component={RecipeDetailScreen} options={{ title: 'Recipe Details' }} />

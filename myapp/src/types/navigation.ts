@@ -1,5 +1,6 @@
 export type RootStackParamList = {
   Login: undefined;
+  Register: undefined;
   Home: undefined;
   RecipeList: undefined;
   RecipeDetail: { recipeId: string };
