@@ -16,7 +16,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const handleGuestLogin = () => {
-    navigation.replace('Home');
+    navigation.replace('MainApp');
   };
 
   return (
@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }: Props) {
           placeholderTextColor="#888"
         />
 
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.replace('Home')}>
+        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.replace('MainApp')}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 

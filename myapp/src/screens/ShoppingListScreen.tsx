@@ -1,9 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button, FlatList } from 'react-native';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
+import { MainTabParamList, RootStackParamList } from '../types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ShoppingList'>;
+type Props = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'ShoppingList'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 export default function ShoppingListScreen({ navigation }: Props) {
   const dummyItems = [{ id: '1', item: 'Tomatoes' }, { id: '2', item: 'Onions' }, { id: '3', item: 'Garlic' }];

@@ -1,29 +1,323 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+  FlatList,
+  Dimensions,
+  StatusBar,
+} from 'react-native';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
+import { MainTabParamList, RootStackParamList } from '../types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'Home'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
+
+const { width } = Dimensions.get('window');
+
+const MOCK_RECIPES = [
+  { id: '1', title: 'Mercimek Çorbası', category: 'Çorba',   servings: 4, emoji: '🍜', color: '#FFF3E0', duration: '30 dk' },
+  { id: '2', title: 'Tavuk Sote',       category: 'Ana Yemek', servings: 2, emoji: '🍗', color: '#F3E5F5', duration: '45 dk' },
+  { id: '3', title: 'Menemen',          category: 'Kahvaltı',  servings: 2, emoji: '🍳', color: '#E8F5E9', duration: '20 dk' },
+  { id: '4', title: 'Sütlaç',           category: 'Tatlı',     servings: 6, emoji: '🍮', color: '#FFF8E1', duration: '60 dk' },
+  { id: '5', title: 'Çoban Salatası',   category: 'Salata',    servings: 4, emoji: '🥗', color: '#E3F2FD', duration: '10 dk' },
+  { id: '6', title: 'Tarhana Çorbası',  category: 'Çorba',     servings: 4, emoji: '🥣', color: '#FCE4EC', duration: '25 dk' },
+];
+
+const ACTION_BUTTONS = [
+  { label: 'Tarif Yaz', icon: '✍️', screen: 'AddEditRecipe' as const, primary: true },
+  { label: 'Tariflerim',      icon: '📖', screen: 'RecipeList'   as const, primary: false },
+  { label: 'Alışveriş\nListesi',       icon: '🛒', screen: 'ShoppingList' as const, primary: false },
+];
 
 export default function HomeScreen({ navigation }: Props) {
+  const fadeAnim  = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(24)).current;
+  const cardAnim  = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(fadeAnim,  { toValue: 1, duration: 500, useNativeDriver: true }),
+        Animated.timing(slideAnim, { toValue: 0, duration: 450, useNativeDriver: true }),
+      ]),
+      Animated.timing(cardAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
+  const renderRecipeCard = ({ item }: { item: typeof MOCK_RECIPES[0] }) => (
+    <TouchableOpacity
+      style={[styles.recipeCard, { backgroundColor: item.color }]}
+      onPress={() => navigation.navigate('RecipeDetail', { recipeId: item.id })}
+      activeOpacity={0.82}
+    >
+      <Text style={styles.recipeEmoji}>{item.emoji}</Text>
+      <View style={styles.categoryBadge}>
+        <Text style={styles.categoryBadgeText}>{item.category}</Text>
+      </View>
+      <Text style={styles.recipeTitle} numberOfLines={2}>{item.title}</Text>
+      <View style={styles.recipeMeta}>
+        <Text style={styles.recipeMetaText}>👥 {item.servings} kişi</Text>
+        <Text style={styles.recipeMetaText}>⏱ {item.duration}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home Screen</Text>
-      <Button title="Go to Recipe List" onPress={() => navigation.navigate('RecipeList')} />
-      <Button title="Go to Shopping List" onPress={() => navigation.navigate('ShoppingList')} />
-    </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
+      <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
+
+      {/* ── Hero Section ── */}
+      <Animated.View style={[styles.heroSection, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+        {/* Brand Row */}
+        <View style={styles.brandRow}>
+          <View style={styles.logoCircle}>
+            <Text style={styles.logoEmoji}>👨‍🍳</Text>
+          </View>
+          <View style={styles.brandText}>
+            <Text style={styles.heroTitle}>KitchenHelper</Text>
+            
+          </View>
+        </View>
+
+        {/* <Text style={styles.heroDesc}>
+          Yemek tariflerinizi yönetin, videolarınızı saniyeler içinde tarife dönüştürün ve mutfaktaki işlerinizi kolaylaştırın.
+        </Text> */}
+
+        {/* Action Buttons */}
+        <View style={styles.actionRow}>
+          {ACTION_BUTTONS.map((btn) => (
+            <TouchableOpacity
+              key={btn.label}
+              style={[styles.actionBtn, btn.primary ? styles.actionBtnPrimary : styles.actionBtnSecondary]}
+              onPress={() => navigation.navigate(btn.screen as any)}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.actionBtnIcon}>{btn.icon}</Text>
+              <Text style={[styles.actionBtnLabel, btn.primary ? styles.actionBtnLabelPrimary : styles.actionBtnLabelSecondary]}>
+                {btn.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </Animated.View>
+
+      {/* ── Popular Recipes Section ── */}
+      <Animated.View style={{ opacity: cardAnim }}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Popüler Tarifler</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('RecipeList')}>
+            <Text style={styles.seeAllText}>Tümünü Gör →</Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={MOCK_RECIPES}
+          renderItem={renderRecipeCard}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          scrollEnabled={false}
+          contentContainerStyle={styles.grid}
+        />
+      </Animated.View>
+    </ScrollView>
   );
 }
+
+const CARD_WIDTH = (width - 48 - 12) / 2; // 16px side padding × 2 + 12px gap
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FAFAFA',
+  },
+  scrollContent: {
+    paddingBottom: 100,
+  },
+
+  /* Hero */
+  heroSection: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 50,
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  logoCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#FFF3E0',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    marginRight: 12,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  title: {
+  logoEmoji: {
+    fontSize: 28,
+  },
+  brandText: {
+    flex: 1,
+  },
+  heroTitle: {
     fontSize: 24,
+    fontWeight: '800',
+    color: '#1A1A1A',
+    letterSpacing: -0.5,
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FF6B35',
+    marginTop: 1,
+  },
+  heroDesc: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 20,
+    marginBottom: 18,
+  },
+
+  /* Action Buttons */
+  actionRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  actionBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 14,
+    minHeight: 72,
+  },
+  actionBtnPrimary: {
+    backgroundColor: '#FF6B35',
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  actionBtnSecondary: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#EBEBEB',
+  },
+  actionBtnIcon: {
+    fontSize: 20,
+    marginBottom: 4,
+  },
+  actionBtnLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    textAlign: 'center',
+    lineHeight: 15,
+  },
+  actionBtnLabelPrimary: {
+    color: '#FFFFFF',
+  },
+  actionBtnLabelSecondary: {
+    color: '#444',
+  },
+
+  /* Section Header */
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginTop: 28,
+    marginBottom: 14,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  seeAllText: {
+    fontSize: 13,
+    color: '#FF6B35',
+    fontWeight: '600',
+  },
+
+  /* Recipe Grid */
+  grid: {
+    paddingHorizontal: 16,
+  },
+  row: {
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  recipeCard: {
+    width: CARD_WIDTH,
+    borderRadius: 16,
+    padding: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  recipeEmoji: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  categoryBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.75)',
+    borderRadius: 8,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    marginBottom: 6,
+  },
+  categoryBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#555',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  recipeTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    lineHeight: 19,
     marginBottom: 20,
+  },
+  recipeMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  recipeMetaText: {
+    fontSize: 10,
+    color: '#777',
+    fontWeight: '500',
   },
 });

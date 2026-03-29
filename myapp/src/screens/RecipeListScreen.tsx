@@ -1,9 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button, FlatList } from 'react-native';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
+import { MainTabParamList, RootStackParamList } from '../types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'RecipeList'>;
+type Props = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'RecipeList'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 export default function RecipeListScreen({ navigation }: Props) {
   // Dummy data
