@@ -50,7 +50,7 @@ export default function RegisterScreen({ navigation }: Props) {
           placeholderTextColor="#888"
         />
         
-        <TouchableOpacity style={styles.registerButton} onPress={() => navigation.replace('Home')}>
+        <TouchableOpacity style={styles.registerButton} onPress={() => navigation.replace('MainApp')}>
           <Text style={styles.registerButtonText}>Sign Up</Text>
         </TouchableOpacity>
 

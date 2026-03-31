@@ -69,7 +69,7 @@ function MainTabs() {
       <Tab.Screen
         name="ShoppingList"
         component={ShoppingListScreen}
-        options={{ title: 'Alışveriş Listesi', tabBarLabel: 'Alışveriş' }}
+        options={{ title: 'Alışveriş Listesi', headerShown: false, tabBarLabel: 'Alışveriş' }}
       />
     </Tab.Navigator>
   );

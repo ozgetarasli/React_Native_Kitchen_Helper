@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFAFA',
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: 24,
   },
 
   /* Hero */
