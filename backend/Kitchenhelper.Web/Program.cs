@@ -100,10 +100,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         policy => policy
-            .WithOrigins(allowedOrigins)
+            .AllowAnyOrigin()
             .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials()); // Cookie i\u00e7in gerekli
+            .AllowAnyHeader());
 });
 
 // EF Core + SQLite
@@ -301,10 +300,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 // React build dosyalar\u0131n\u0131 servis et
-app.UseDefaultFiles();
+// app.UseDefaultFiles();
 
-// React SPA fallback - t\u00fcm route'lar\u0131 index.html'e y\u00f6nlendir
-// API route'lar\u0131ndan sonra, MVC route'lar\u0131ndan \u00f6nce
-app.MapFallbackToFile("index.html");
+// // React SPA fallback - t\u00fcm route'lar\u0131 index.html'e y\u00f6nlendir
+// // API route'lar\u0131ndan sonra, MVC route'lar\u0131ndan \u00f6nce
+// app.MapFallbackToFile("index.html");
 
 app.Run();

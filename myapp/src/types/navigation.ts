@@ -2,7 +2,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   MainApp: undefined;
-  RecipeDetail: { recipeId: string };
+  RecipeDetail: { recipeId: string | number };
   AddEditRecipe: { recipeId?: string } | undefined;
 };
 

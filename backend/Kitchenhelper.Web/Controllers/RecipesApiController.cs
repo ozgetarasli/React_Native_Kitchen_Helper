@@ -52,7 +52,7 @@ public class RecipesApiController : ControllerBase
             prepTime = r.PrepTime ?? "30 mins",
             servings = r.Servings ?? 4,
             categories = r.GetCategories().ToArray(),
-            image = r.ImagePath ?? "",
+            image = SanitizeImagePath(r.ImagePath),
             sourceUrl = r.SourceUrl ?? "",
             calories = r.Calories,
             protein = r.Protein,
@@ -90,7 +90,7 @@ public class RecipesApiController : ControllerBase
             prepTime = recipe.PrepTime ?? "30 mins",
             servings = recipe.Servings ?? 4,
             categories = recipe.GetCategories().ToArray(),
-            image = recipe.ImagePath ?? "",
+            image = SanitizeImagePath(recipe.ImagePath),
             sourceUrl = recipe.SourceUrl ?? "",
             calories = recipe.Calories,
             protein = recipe.Protein,
@@ -126,7 +126,7 @@ public class RecipesApiController : ControllerBase
             title = m.Recipe.Title,
             description = m.Recipe.Description,
             isFavorite = m.Recipe.IsFavorite,
-            image = m.Recipe.ImagePath ?? "",
+            image = SanitizeImagePath(m.Recipe.ImagePath),
             missingIngredients = m.MissingIngredients,
             ingredients = m.Recipe.RecipeIngredients.Select(ri => new
             {
@@ -185,9 +185,9 @@ public class RecipesApiController : ControllerBase
         var recipe = await _db.Recipes.FindAsync(recipeId);
         if (recipe != null)
         {
-            Console.WriteLine($"📸 DEBUG: request.Image = '{request.Image}'");
-            recipe.ImagePath = string.IsNullOrWhiteSpace(request.Image) ? null : request.Image.Trim();
-            Console.WriteLine($"📸 DEBUG: recipe.ImagePath = '{recipe.ImagePath}'");
+            var sanitizedImage = SanitizeImagePath(request.Image);
+            recipe.ImagePath = string.IsNullOrWhiteSpace(sanitizedImage) ? null : sanitizedImage;
+
             recipe.SourceUrl = string.IsNullOrWhiteSpace(request.SourceUrl) ? null : request.SourceUrl.Trim();
             recipe.IsFavorite = request.IsFavorite;
             recipe.PrepTime = request.PrepTime;
@@ -241,7 +241,7 @@ public class RecipesApiController : ControllerBase
             prepTime = request.PrepTime ?? "30 mins",
             servings = request.Servings ?? 4,
             categories = request.Categories?.ToArray() ?? Array.Empty<string>(),
-            image = createdRecipe.ImagePath ?? "",
+            image = SanitizeImagePath(createdRecipe.ImagePath),
             sourceUrl = createdRecipe.SourceUrl ?? "",
             calories = createdRecipe.Calories,
             protein = createdRecipe.Protein,
@@ -279,7 +279,8 @@ public class RecipesApiController : ControllerBase
         // Temel bilgileri güncelle
         recipe.Title = request.Title?.Trim() ?? recipe.Title;
         recipe.Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim();
-        recipe.ImagePath = string.IsNullOrWhiteSpace(request.Image) ? recipe.ImagePath : request.Image.Trim();
+        var sanitizedUpdateImage = SanitizeImagePath(request.Image);
+        recipe.ImagePath = string.IsNullOrWhiteSpace(sanitizedUpdateImage) ? recipe.ImagePath : sanitizedUpdateImage;
         recipe.PrepTime = request.PrepTime ?? recipe.PrepTime;
         recipe.Servings = request.Servings ?? recipe.Servings;
         recipe.SourceUrl = request.SourceUrl ?? recipe.SourceUrl;
@@ -358,7 +359,7 @@ public class RecipesApiController : ControllerBase
             prepTime = recipe.PrepTime ?? "30 mins",
             servings = recipe.Servings ?? 4,
             categories = recipe.GetCategories().ToArray(),
-            image = recipe.ImagePath ?? "",
+            image = SanitizeImagePath(recipe.ImagePath),
             sourceUrl = recipe.SourceUrl ?? "",
             calories = recipe.Calories,
             protein = recipe.Protein,
@@ -478,6 +479,18 @@ public class RecipesApiController : ControllerBase
         return string.Join("\n", request.Instructions
             .Select(s => s?.Trim())
             .Where(s => !string.IsNullOrWhiteSpace(s)));
+    }
+
+    /// <summary>
+    /// base64 data URI veya bozuk path'leri temizler.
+    /// Sadece /uploads/... gibi geçerli relative path'leri döndürür.
+    /// </summary>
+    private static string SanitizeImagePath(string? imagePath)
+    {
+        if (string.IsNullOrWhiteSpace(imagePath)) return "";
+        // base64 data URI'leri geçersiz say
+        if (imagePath.Contains("data:image") || imagePath.Contains(";base64")) return "";
+        return imagePath;
     }
 
     private static string BuildAmountString(decimal? quantity, string? unit)

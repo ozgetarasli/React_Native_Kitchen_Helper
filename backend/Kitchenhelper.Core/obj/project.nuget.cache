@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZBvMxGrtwzM=",
+  "dgSpecHash": "XqXHqFaDZj4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\MSI\\kitchen_helper\\Kitchen_helper\\Kitchenhelper.Core\\Kitchenhelper.Core.csproj",
+  "projectFilePath": "C:\\Users\\MSI\\OneDrive - Ankara Üniversitesi\\Belgeler\\GitHub\\KitchenHelper_ReactNative\\React_Native_Kitchen_Helper\\backend\\Kitchenhelper.Core\\Kitchenhelper.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\MSI\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512"
   ],

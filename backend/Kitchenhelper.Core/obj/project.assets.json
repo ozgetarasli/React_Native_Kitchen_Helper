@@ -62,11 +62,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\MSI\\kitchen_helper\\Kitchen_helper\\Kitchenhelper.Core\\Kitchenhelper.Core.csproj",
+      "projectUniqueName": "C:\\Users\\MSI\\OneDrive - Ankara Üniversitesi\\Belgeler\\GitHub\\KitchenHelper_ReactNative\\React_Native_Kitchen_Helper\\backend\\Kitchenhelper.Core\\Kitchenhelper.Core.csproj",
       "projectName": "Kitchenhelper.Core",
-      "projectPath": "C:\\Users\\MSI\\kitchen_helper\\Kitchen_helper\\Kitchenhelper.Core\\Kitchenhelper.Core.csproj",
+      "projectPath": "C:\\Users\\MSI\\OneDrive - Ankara Üniversitesi\\Belgeler\\GitHub\\KitchenHelper_ReactNative\\React_Native_Kitchen_Helper\\backend\\Kitchenhelper.Core\\Kitchenhelper.Core.csproj",
       "packagesPath": "C:\\Users\\MSI\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\MSI\\kitchen_helper\\Kitchen_helper\\Kitchenhelper.Core\\obj\\",
+      "outputPath": "C:\\Users\\MSI\\OneDrive - Ankara Üniversitesi\\Belgeler\\GitHub\\KitchenHelper_ReactNative\\React_Native_Kitchen_Helper\\backend\\Kitchenhelper.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamList, RootStackParamList } from '../types/navigation';
+import api from '../services/api';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'Home'>,
@@ -21,15 +22,6 @@ type Props = CompositeScreenProps<
 >;
 
 const { width } = Dimensions.get('window');
-
-const MOCK_RECIPES = [
-  { id: '1', title: 'Mercimek Çorbası', category: 'Çorba',   servings: 4, emoji: '🍜', color: '#FFF3E0', duration: '30 dk' },
-  { id: '2', title: 'Tavuk Sote',       category: 'Ana Yemek', servings: 2, emoji: '🍗', color: '#F3E5F5', duration: '45 dk' },
-  { id: '3', title: 'Menemen',          category: 'Kahvaltı',  servings: 2, emoji: '🍳', color: '#E8F5E9', duration: '20 dk' },
-  { id: '4', title: 'Sütlaç',           category: 'Tatlı',     servings: 6, emoji: '🍮', color: '#FFF8E1', duration: '60 dk' },
-  { id: '5', title: 'Çoban Salatası',   category: 'Salata',    servings: 4, emoji: '🥗', color: '#E3F2FD', duration: '10 dk' },
-  { id: '6', title: 'Tarhana Çorbası',  category: 'Çorba',     servings: 4, emoji: '🥣', color: '#FCE4EC', duration: '25 dk' },
-];
 
 const ACTION_BUTTONS = [
   { label: 'Tarif Yaz', icon: '✍️', screen: 'AddEditRecipe' as const, primary: true },
@@ -42,6 +34,9 @@ export default function HomeScreen({ navigation }: Props) {
   const slideAnim = useRef(new Animated.Value(24)).current;
   const cardAnim  = useRef(new Animated.Value(0)).current;
 
+  const [recipes, setRecipes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
@@ -50,9 +45,34 @@ export default function HomeScreen({ navigation }: Props) {
       ]),
       Animated.timing(cardAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
     ]).start();
+
+    fetchRecipes();
   }, []);
 
-  const renderRecipeCard = ({ item }: { item: typeof MOCK_RECIPES[0] }) => (
+  const fetchRecipes = async () => {
+    try {
+      const response = await api.get('/RecipesApi');
+      // Format backend recipes to match the mock structure
+      const formatted = response.data.slice(0, 6).map((r: any, index: number) => ({
+        id: r.id.toString(),
+        title: r.title,
+        category: r.categories && r.categories.length > 0 ? r.categories[0] : 'Diğer',
+        servings: r.servings || 4,
+        emoji: '🍽️', 
+        color: ['#FFF3E0', '#F3E5F5', '#E8F5E9', '#FFF8E1', '#E3F2FD', '#FCE4EC'][index % 6],
+        duration: r.prepTime || '30 dk'
+      }));
+      setRecipes(formatted);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      // Removed fallback to mock recipes
+      setRecipes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderRecipeCard = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={[styles.recipeCard, { backgroundColor: item.color }]}
       onPress={() => navigation.navigate('RecipeDetail', { recipeId: item.id })}
@@ -123,13 +143,21 @@ export default function HomeScreen({ navigation }: Props) {
         </View>
 
         <FlatList
-          data={MOCK_RECIPES}
+          data={recipes}
           renderItem={renderRecipeCard}
           keyExtractor={(item) => item.id}
           numColumns={2}
           columnWrapperStyle={styles.row}
           scrollEnabled={false}
           contentContainerStyle={styles.grid}
+          ListEmptyComponent={
+            !loading ? (
+              <View style={{ alignItems: 'center', marginTop: 40 }}>
+                <Text style={{ fontSize: 40 }}>🍽️</Text>
+                <Text style={{ fontSize: 16, color: '#666', marginTop: 10 }}>Henüz tarif bulunmuyor.</Text>
+              </View>
+            ) : null
+          }
         />
       </Animated.View>
     </ScrollView>

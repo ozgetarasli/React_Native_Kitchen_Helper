@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   View, 
   Text, 
@@ -7,14 +7,51 @@ import {
   TouchableOpacity, 
   KeyboardAvoidingView, 
   Platform, 
-  ScrollView 
+  ScrollView,
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
+import api from '../services/api';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
 export default function RegisterScreen({ navigation }: Props) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert('Hata', 'Lütfen tüm alanları doldurun.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Hata', 'Şifreler eşleşmiyor.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await api.post('/Auth/register', {
+        email,
+        password
+      });
+
+      Alert.alert('Başarılı', 'Kayıt başarılı, lütfen giriş yapın.', [
+        { text: 'Tamam', onPress: () => navigation.navigate('Login') }
+      ]);
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Kayıt sırasında bir hata oluştu.';
+      Alert.alert('Kayıt Başarısız', msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -22,40 +59,49 @@ export default function RegisterScreen({ navigation }: Props) {
     >
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.logo}>KitchenHelper</Text>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Join us and start cooking better!</Text>
+        <Text style={styles.title}>Hesap Oluştur</Text>
+        <Text style={styles.subtitle}>Bize katılın ve daha iyi yemek yapmaya başlayın!</Text>
 
-        <TextInput 
-          placeholder="Full Name" 
-          style={styles.input} 
-          placeholderTextColor="#888"
-        />
         <TextInput 
           placeholder="Email" 
           style={styles.input} 
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor="#888"
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput 
-          placeholder="Password" 
+          placeholder="Şifre" 
           style={styles.input} 
           secureTextEntry 
           placeholderTextColor="#888"
+          value={password}
+          onChangeText={setPassword}
         />
         <TextInput 
-          placeholder="Confirm Password" 
+          placeholder="Şifreyi Onayla" 
           style={styles.input} 
           secureTextEntry 
           placeholderTextColor="#888"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
         />
         
-        <TouchableOpacity style={styles.registerButton} onPress={() => navigation.replace('MainApp')}>
-          <Text style={styles.registerButtonText}>Sign Up</Text>
+        <TouchableOpacity 
+          style={styles.registerButton} 
+          onPress={handleRegister}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.registerButtonText}>Kayıt Ol</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.linkText}>Already have an account? Login</Text>
+          <Text style={styles.linkText}>Zaten hesabınız var mı? Giriş yapın</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -11,3 +11,16 @@ C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Debug\net9.0\r
 C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.pdb
 C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Debug\net9.0\ref\Kitchenhelper.Core.dll
 C:\Users\MSI\kitchen_helper\Kitchen_helper\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.csproj.AssemblyReference.cache
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\bin\Debug\net9.0\Kitchenhelper.Core.deps.json
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\bin\Debug\net9.0\Kitchenhelper.Core.dll
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\bin\Debug\net9.0\Kitchenhelper.Core.pdb
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.csproj.AssemblyReference.cache
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.AssemblyInfoInputs.cache
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.AssemblyInfo.cs
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.csproj.CoreCompileInputs.cache
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.sourcelink.json
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.dll
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\refint\Kitchenhelper.Core.dll
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\Kitchenhelper.Core.pdb
+C:\Users\MSI\OneDrive - Ankara Üniversitesi\Belgeler\GitHub\KitchenHelper_ReactNative\React_Native_Kitchen_Helper\backend\Kitchenhelper.Core\obj\Debug\net9.0\ref\Kitchenhelper.Core.dll

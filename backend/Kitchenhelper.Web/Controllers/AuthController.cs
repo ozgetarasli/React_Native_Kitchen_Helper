@@ -79,6 +79,7 @@ public class AuthController : ControllerBase
         return Ok(new
         {
             message = "Giriş başarılı",
+            token = token,
             user = new
             {
                 id = user.Id,

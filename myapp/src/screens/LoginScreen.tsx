@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,14 +7,50 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
+  ScrollView,
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
+import api from '../services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Hata', 'Lütfen email ve şifre giriniz.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await api.post('/Auth/login', {
+        email,
+        password
+      });
+
+      if (response.data && response.data.token) {
+        await AsyncStorage.setItem('auth_token', response.data.token);
+        if (response.data.user) {
+          await AsyncStorage.setItem('user_info', JSON.stringify(response.data.user));
+        }
+        navigation.replace('MainApp');
+      }
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Giriş sırasında bir hata oluştu.';
+      Alert.alert('Giriş Başarısız', msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGuestLogin = () => {
     navigation.replace('MainApp');
   };
@@ -26,38 +62,49 @@ export default function LoginScreen({ navigation }: Props) {
     >
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.logo}>KitchenHelper</Text>
-
-
+        
         <TextInput
           placeholder="Email"
           style={styles.input}
           placeholderTextColor="#888"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
-          placeholder="Password"
+          placeholder="Şifre"
           style={styles.input}
           secureTextEntry
           placeholderTextColor="#888"
+          value={password}
+          onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.replace('MainApp')}>
-          <Text style={styles.loginButtonText}>Login</Text>
+        <TouchableOpacity 
+          style={styles.loginButton} 
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.loginButtonText}>Giriş Yap</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
+          <Text style={styles.linkText}>Hesabınız yok mu? Kayıt Ol</Text>
         </TouchableOpacity>
 
         <View style={styles.divider}>
           <View style={styles.line} />
-          <Text style={styles.dividerText}>OR</Text>
+          <Text style={styles.dividerText}>VEYA</Text>
           <View style={styles.line} />
         </View>
 
         <TouchableOpacity style={styles.guestButton} onPress={handleGuestLogin}>
-          <Text style={styles.guestButtonText}>Continue as Guest</Text>
+          <Text style={styles.guestButtonText}>Misafir Olarak Devam Et</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -78,12 +125,6 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: 'bold',
     color: '#FF6F61',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
     textAlign: 'center',
     marginBottom: 40,
   },
@@ -149,3 +190,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+

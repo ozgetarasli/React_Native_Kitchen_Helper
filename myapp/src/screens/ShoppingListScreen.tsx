@@ -18,6 +18,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamList, RootStackParamList } from '../types/navigation';
+import api from '../services/api';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'ShoppingList'>,
@@ -73,16 +74,6 @@ const CATEGORY_EMOJIS: Record<string, string> = {
   'Diğer': '🍽️',
 };
 
-const INITIAL_PANTRY: PantryItem[] = [
-  { id: '1', name: 'Domates', quantity: '5', unit: 'adet', category: 'Sebze' },
-  { id: '2', name: 'Soğan', quantity: '3', unit: 'adet', category: 'Sebze' },
-  { id: '3', name: 'Tavuk Göğsü', quantity: '500', unit: 'g', category: 'Et' },
-  { id: '4', name: 'Süt', quantity: '1', unit: 'lt', category: 'Süt Ürünleri' },
-  { id: '5', name: 'Kırmızı Mercimek', quantity: '500', unit: 'g', category: 'Baklagil' },
-  { id: '6', name: 'Elma', quantity: '4', unit: 'adet', category: 'Meyve' },
-  { id: '7', name: 'Karabiber', quantity: '1', unit: 'paket', category: 'Baharat' },
-];
-
 const INITIAL_SHOPPING: ShoppingItem[] = [
   { id: '1', name: 'Zeytinyağı', purchased: false },
   { id: '2', name: 'Makarna', purchased: false },
@@ -120,11 +111,27 @@ export default function ShoppingListScreen({ navigation }: Props) {
   }, [toastAnim]);
 
   /* ── Shopping State ── */
-  const [shoppingItems, setShoppingItems] = useState<ShoppingItem[]>(INITIAL_SHOPPING);
+  const [shoppingItems, setShoppingItems] = useState<ShoppingItem[]>([]);
   const [newShoppingName, setNewShoppingName] = useState('');
 
+  const fetchShoppingList = async () => {
+    try {
+      const { data } = await api.get('/ShoppingListApi');
+      const formatted = data.map((i: any) => ({
+        id: i.id.toString(),
+        name: i.name,
+        purchased: i.purchased,
+      }));
+      setShoppingItems(formatted);
+    } catch (e) {
+      console.error('Error fetching shopping list:', e);
+      // Fallback
+      setShoppingItems(INITIAL_SHOPPING);
+    }
+  };
+
   /* ── Pantry State ── */
-  const [pantryItems, setPantryItems] = useState<PantryItem[]>(INITIAL_PANTRY);
+  const [pantryItems, setPantryItems] = useState<PantryItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchText, setSearchText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -144,31 +151,69 @@ export default function ShoppingListScreen({ navigation }: Props) {
       Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
       Animated.timing(slideAnim, { toValue: 0, duration: 450, useNativeDriver: true }),
     ]).start();
+    
+    fetchShoppingList();
+    fetchPantryItems();
   }, []);
 
-  /* ── Shopping Handlers ── */
-  const handleAddShopping = () => {
-    if (!newShoppingName.trim()) return;
-    const newItem: ShoppingItem = {
-      id: Date.now().toString(),
-      name: newShoppingName.trim(),
-      purchased: false,
-    };
-    setShoppingItems((prev) => [newItem, ...prev]);
-    setNewShoppingName('');
+  const fetchPantryItems = async () => {
+    try {
+      const { data } = await api.get('/PantryApi');
+      setPantryItems(data);
+    } catch (e) {
+      console.error('Error fetching pantry items:', e);
+      setPantryItems([]);
+    }
   };
 
-  const togglePurchased = (id: string) => {
+  /* ── Shopping Handlers ── */
+  const handleAddShopping = async () => {
+    if (!newShoppingName.trim()) return;
+    const name = newShoppingName.trim();
+    try {
+      await api.post('/ShoppingListApi', { name });
+      fetchShoppingList();
+      setNewShoppingName('');
+    } catch (e) {
+      console.error('Add failed', e);
+      showToast('Ürün eklenemedi', 'warning', '⚠️');
+    }
+  };
+
+  const togglePurchased = async (id: string) => {
+    const item = shoppingItems.find(i => i.id === id);
+    if (!item) return;
+    
+    // optimistic update
     setShoppingItems((prev) =>
       prev.map((i) => (i.id === id ? { ...i, purchased: !i.purchased } : i))
     );
+
+    try {
+      await api.put(`/ShoppingListApi/${id}/toggle`, { isChecked: !item.purchased });
+    } catch (e) {
+      console.error('Toggle failed', e);
+      // revert optimistic 
+      setShoppingItems((prev) =>
+        prev.map((i) => (i.id === id ? { ...i, purchased: item.purchased } : i))
+      );
+    }
   };
 
-  const removeShopping = (id: string) => {
+  const removeShopping = async (id: string) => {
+    const previousItems = [...shoppingItems];
+    // optimistic update
     setShoppingItems((prev) => prev.filter((i) => i.id !== id));
+
+    try {
+      await api.delete(`/ShoppingListApi/${id}`);
+    } catch (e) {
+      console.error('Delete failed', e);
+      setShoppingItems(previousItems);
+    }
   };
 
-  const addToShoppingList = (pantryItem: PantryItem) => {
+  const addToShoppingList = async (pantryItem: PantryItem) => {
     const alreadyExists = shoppingItems.some(
       (s) => s.name.toLowerCase() === pantryItem.name.toLowerCase() && !s.purchased
     );
@@ -176,13 +221,15 @@ export default function ShoppingListScreen({ navigation }: Props) {
       showToast(`"${pantryItem.name}" zaten alışveriş listenizde.`, 'info', 'ℹ️');
       return;
     }
-    const newItem: ShoppingItem = {
-      id: Date.now().toString(),
-      name: `${pantryItem.name} (${pantryItem.quantity} ${pantryItem.unit})`,
-      purchased: false,
-    };
-    setShoppingItems((prev) => [newItem, ...prev]);
-    showToast(`"${pantryItem.name}" alışveriş listesine eklendi.`, 'success', '🛒');
+    const name = `${pantryItem.name} (${pantryItem.quantity} ${pantryItem.unit})`;
+    try {
+      await api.post('/ShoppingListApi', { name });
+      fetchShoppingList();
+      showToast(`"${pantryItem.name}" alışveriş listesine eklendi.`, 'success', '🛒');
+    } catch (e) {
+      console.error(e);
+      showToast('Ekleme başarısız', 'warning', '⚠️');
+    }
   };
 
   /* ── Pantry Handlers ── */
@@ -210,40 +257,51 @@ export default function ShoppingListScreen({ navigation }: Props) {
     setModalVisible(true);
   };
 
-  const handleSavePantry = () => {
-    if (!formName.trim()) {
-      showToast('Malzeme adı boş olamaz.', 'warning', '⚠️');
+  const handleSavePantry = async () => {
+    if (!formName.trim() || !formQuantity.trim()) {
+      showToast('Malzeme adı ve miktar boş olamaz.', 'warning', '⚠️');
       return;
     }
-    if (!formQuantity.trim()) {
-      showToast('Miktar boş olamaz.', 'warning', '⚠️');
-      return;
+
+    const payload = {
+      name: formName.trim(),
+      quantity: formQuantity.trim(),
+      unit: formUnit,
+      category: formCategory,
+    };
+
+    try {
+      if (editingItem) {
+        await api.put(`/PantryApi/${editingItem.id}`, payload);
+      } else {
+        await api.post('/PantryApi', payload);
+      }
+      fetchPantryItems();
+      setModalVisible(false);
+      showToast(editingItem ? 'Malzeme güncellendi' : 'Malzeme eklendi', 'success', '🧊');
+    } catch (e) {
+      console.error('Error saving pantry item:', e);
+      showToast('Kayıt başarısız', 'warning', '⚠️');
     }
-    if (editingItem) {
-      setPantryItems((prev) =>
-        prev.map((i) =>
-          i.id === editingItem.id
-            ? { ...i, name: formName.trim(), quantity: formQuantity.trim(), unit: formUnit, category: formCategory }
-            : i
-        )
-      );
-    } else {
-      const newItem: PantryItem = {
-        id: Date.now().toString(),
-        name: formName.trim(),
-        quantity: formQuantity.trim(),
-        unit: formUnit,
-        category: formCategory,
-      };
-      setPantryItems((prev) => [newItem, ...prev]);
-    }
-    setModalVisible(false);
   };
 
   const handleDeletePantry = (id: string) => {
     Alert.alert('Malzemeyi Sil', 'Bu malzemeyi silmek istediğinize emin misiniz?', [
       { text: 'İptal', style: 'cancel' },
-      { text: 'Sil', style: 'destructive', onPress: () => setPantryItems((prev) => prev.filter((i) => i.id !== id)) },
+      { 
+        text: 'Sil', 
+        style: 'destructive', 
+        onPress: async () => {
+          try {
+            await api.delete(`/PantryApi/${id}`);
+            setPantryItems((prev) => prev.filter((i) => i.id !== id));
+            showToast('Malzeme silindi', 'success', '🗑️');
+          } catch (e) {
+            console.error('Error deleting pantry item:', e);
+            showToast('Silme başarısız', 'warning', '⚠️');
+          }
+        } 
+      },
     ]);
   };
 
