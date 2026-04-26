@@ -10,6 +10,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import RecipeListScreen from './src/screens/RecipeListScreen';
+import FavoritesScreen from './src/screens/FavoritesScreen';
 import RecipeDetailScreen from './src/screens/RecipeDetailScreen';
 import AddEditRecipeScreen from './src/screens/AddEditRecipeScreen';
 import ShoppingListScreen from './src/screens/ShoppingListScreen';
@@ -20,6 +21,7 @@ const Tab   = createBottomTabNavigator<MainTabParamList>();
 const TAB_ICONS: Record<string, string> = {
   Home:         '🏠',
   RecipeList:   '📖',
+  Favorites:    '❤️',
   ShoppingList: '🛒',
 };
 
@@ -65,6 +67,11 @@ function MainTabs() {
         name="RecipeList"
         component={RecipeListScreen}
         options={{ title: 'Tarifler', tabBarLabel: 'Tarifler' }}
+      />
+      <Tab.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{ title: 'Favoriler', tabBarLabel: 'Favoriler' }}
       />
       <Tab.Screen
         name="ShoppingList"

@@ -74,6 +74,47 @@ public class RecipesApiController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("favorites")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetFavorites()
+    {
+        var recipes = await _db.Recipes
+            .Where(r => r.IsFavorite)
+            .Include(r => r.RecipeIngredients)
+            .ThenInclude(ri => ri.Ingredient)
+            .ToListAsync();
+
+        var result = recipes.Select(r => new
+        {
+            id = r.Id,
+            title = r.Title,
+            description = r.Description,
+            isFavorite = r.IsFavorite,
+            prepTime = r.PrepTime ?? "30 mins",
+            servings = r.Servings ?? 4,
+            categories = r.GetCategories().ToArray(),
+            image = SanitizeImagePath(r.ImagePath),
+            sourceUrl = r.SourceUrl ?? "",
+            calories = r.Calories,
+            protein = r.Protein,
+            fat = r.Fat,
+            carbs = r.Carbs,
+            ingredients = r.RecipeIngredients.Select(ri => new
+            {
+                name = ri.Ingredient.Name,
+                amount = BuildAmountString(ri.Quantity, ri.Unit)
+            }).ToList(),
+            instructions = !string.IsNullOrEmpty(r.StepsMarkdown)
+                ? r.StepsMarkdown.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrEmpty(s))
+                    .ToArray()
+                : new string[] { }
+        }).ToList();
+
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {

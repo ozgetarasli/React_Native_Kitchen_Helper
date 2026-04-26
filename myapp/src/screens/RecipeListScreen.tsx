@@ -45,6 +45,47 @@ const CATEGORIES = [
   { label: 'İçecek', value: 'icecek', emoji: '🍹', aliases: ['icecek', 'drink', 'beverage'] },
 ];
 
+function FavoriteHeartButton({
+  isFavorite,
+  onPress,
+}: {
+  isFavorite: boolean;
+  onPress: () => void;
+}) {
+  const heartScale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    Animated.sequence([
+      Animated.spring(heartScale, {
+        toValue: 1.25,
+        useNativeDriver: true,
+        speed: 22,
+        bounciness: 10,
+      }),
+      Animated.spring(heartScale, {
+        toValue: 1,
+        useNativeDriver: true,
+        speed: 20,
+        bounciness: 8,
+      }),
+    ]).start();
+
+    onPress();
+  };
+
+  return (
+    <TouchableOpacity
+      style={styles.favoriteBtn}
+      onPress={handlePress}
+      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+    >
+      <Animated.Text style={{ fontSize: 18, transform: [{ scale: heartScale }] }}>
+        {isFavorite ? '❤️' : '🤍'}
+      </Animated.Text>
+    </TouchableOpacity>
+  );
+}
+
 export default function RecipeListScreen({ navigation }: Props) {
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,13 +212,10 @@ export default function RecipeListScreen({ navigation }: Props) {
         onPress={() => navigation.navigate('RecipeDetail', { recipeId: item.id.toString() })}
         activeOpacity={0.85}
       >
-        <TouchableOpacity
-          style={styles.favoriteBtn}
+        <FavoriteHeartButton
+          isFavorite={item.isFavorite}
           onPress={() => handleToggleFavorite(item.id)}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Text style={{ fontSize: 18 }}>{item.isFavorite ? '❤️' : '🤍'}</Text>
-        </TouchableOpacity>
+        />
 
         {validImageUrl ? (
           <Image

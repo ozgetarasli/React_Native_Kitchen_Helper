@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kitchenhelper.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40e0c72bc6a73cd50a2bcab437c9dd4fabda5386")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd28bfa8cce0d47ec7f478fee02c9abe26f7ea3e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kitchenhelper.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kitchenhelper.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

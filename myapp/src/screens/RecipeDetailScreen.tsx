@@ -41,6 +41,7 @@ export default function RecipeDetailScreen({ route, navigation }: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
+  const favoriteScaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     loadRecipeDetail();
@@ -160,6 +161,21 @@ export default function RecipeDetailScreen({ route, navigation }: Props) {
   const handleToggleFavorite = async () => {
     if (!recipe) return;
 
+    Animated.sequence([
+      Animated.spring(favoriteScaleAnim, {
+        toValue: 1.25,
+        useNativeDriver: true,
+        speed: 22,
+        bounciness: 10,
+      }),
+      Animated.spring(favoriteScaleAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+        speed: 20,
+        bounciness: 8,
+      }),
+    ]).start();
+
     try {
       // Optimistic update
       const newRecipe = { ...recipe, isFavorite: !recipe.isFavorite };
@@ -266,7 +282,9 @@ export default function RecipeDetailScreen({ route, navigation }: Props) {
             onPress={handleToggleFavorite}
             activeOpacity={0.7}
           >
-            <Text style={styles.favoriteEmoji}>{recipe.isFavorite ? '❤️' : '🤍'}</Text>
+            <Animated.Text style={[styles.favoriteEmoji, { transform: [{ scale: favoriteScaleAnim }] }]}>
+              {recipe.isFavorite ? '❤️' : '🤍'}
+            </Animated.Text>
           </TouchableOpacity>
 
           {/* Back Button */}
