@@ -8,8 +8,10 @@ import {
   ActivityIndicator,
   Image,
   Animated,
+  useWindowDimensions,
 } from 'react-native';
 import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamList, RootStackParamList } from '../types/navigation';
@@ -71,6 +73,21 @@ function FavoriteHeartButton({
 }
 
 export default function FavoritesScreen({ navigation }: Props) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 380;
+  const isTablet = width >= 768;
+  const numColumns = width >= 1080 ? 3 : width >= 640 ? 2 : 1;
+  const basePadding = isCompact ? 12 : isTablet ? 24 : 16;
+  const contentMaxWidth = 1160;
+  const horizontalPadding = width > contentMaxWidth + basePadding * 2
+    ? Math.floor((width - contentMaxWidth) / 2)
+    : basePadding;
+  const contentWidth = width - horizontalPadding * 2;
+  const cardGap = 14;
+  const rawCardWidth = (contentWidth - cardGap * (numColumns - 1)) / numColumns;
+  const cardWidth = Math.min(rawCardWidth, 420);
+  const imageHeight = Math.max(150, Math.min(230, Math.round(cardWidth * 0.52)));
+
   const [recipes, setRecipes] = useState<RecipeItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -118,15 +135,15 @@ export default function FavoritesScreen({ navigation }: Props) {
 
     return (
       <TouchableOpacity
-        style={styles.recipeCard}
+        style={[styles.recipeCard, { width: cardWidth }]}
         onPress={() => navigation.navigate('RecipeDetail', { recipeId: item.id.toString() })}
         activeOpacity={0.85}
       >
         <View style={styles.imageWrap}>
           {imageUrl ? (
-            <Image source={{ uri: imageUrl }} style={styles.recipeImage} resizeMode="cover" />
+            <Image source={{ uri: imageUrl }} style={[styles.recipeImage, { height: imageHeight }]} resizeMode="cover" />
           ) : (
-            <View style={[styles.recipeImage, styles.recipeImagePlaceholder]}>
+            <View style={[styles.recipeImage, styles.recipeImagePlaceholder, { height: imageHeight }]}>
               <Text style={styles.placeholderEmoji}>🍽️</Text>
             </View>
           )}
@@ -153,8 +170,8 @@ export default function FavoritesScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={styles.container}>
+      <View style={[styles.header, { paddingHorizontal: horizontalPadding, paddingTop: 12 }]}> 
         <Text style={styles.title}>Favori Tariflerim</Text>
         <Text style={styles.subtitle}>Beğendiğiniz tariflere buradan hızlıca ulaşın</Text>
       </View>
@@ -163,11 +180,14 @@ export default function FavoritesScreen({ navigation }: Props) {
         <ActivityIndicator size="large" color="#FF6B35" style={{ marginTop: 40 }} />
       ) : (
         <FlatList
+          key={`favorites-grid-${numColumns}`}
           data={recipes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderFavoriteRecipe}
+          numColumns={numColumns}
+          columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { paddingHorizontal: horizontalPadding }]}
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
               <Text style={styles.emptyEmoji}>🤍</Text>
@@ -177,17 +197,17 @@ export default function FavoritesScreen({ navigation }: Props) {
           }
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#FFFDF9',
   },
   header: {
-    paddingTop: 50,
+    paddingTop: 12,
     paddingHorizontal: 16,
     paddingBottom: 12,
     backgroundColor: '#FFFFFF',
@@ -215,6 +235,10 @@ const styles = StyleSheet.create({
     paddingBottom: 110,
     gap: 14,
   },
+  row: {
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
   recipeCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
@@ -230,7 +254,7 @@ const styles = StyleSheet.create({
   },
   recipeImage: {
     width: '100%',
-    height: 170,
+    height: 180,
   },
   recipeImagePlaceholder: {
     backgroundColor: '#F1F1F1',

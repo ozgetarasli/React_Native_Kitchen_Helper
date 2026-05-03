@@ -9,15 +9,20 @@ import {
   Platform, 
   ScrollView,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  useWindowDimensions
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types/navigation';
 import api from '../services/api';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
 export default function RegisterScreen({ navigation }: Props) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 360;
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,7 +41,7 @@ export default function RegisterScreen({ navigation }: Props) {
 
     try {
       setLoading(true);
-      const response = await api.post('/Auth/register', {
+      await api.post('/Auth/register', {
         email,
         password
       });
@@ -53,122 +58,188 @@ export default function RegisterScreen({ navigation }: Props) {
   };
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.logo}>KitchenHelper</Text>
-        <Text style={styles.title}>Hesap Oluştur</Text>
-        <Text style={styles.subtitle}>Bize katılın ve daha iyi yemek yapmaya başlayın!</Text>
-
-        <TextInput 
-          placeholder="Email" 
-          style={styles.input} 
-          keyboardType="email-address"
-          autoCapitalize="none"
-          placeholderTextColor="#888"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput 
-          placeholder="Şifre" 
-          style={styles.input} 
-          secureTextEntry 
-          placeholderTextColor="#888"
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TextInput 
-          placeholder="Şifreyi Onayla" 
-          style={styles.input} 
-          secureTextEntry 
-          placeholderTextColor="#888"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
-        
-        <TouchableOpacity 
-          style={styles.registerButton} 
-          onPress={handleRegister}
-          disabled={loading}
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.container}
+      >
+        <ScrollView
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingHorizontal: isCompact ? 16 : 24 },
+          ]}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.registerButtonText}>Kayıt Ol</Text>
-          )}
-        </TouchableOpacity>
+          <View style={[styles.card, { maxWidth: 460, padding: isCompact ? 20 : 28 }]}>
+            <View style={styles.brandRow}>
+              <View style={styles.brandIconWrap}>
+                <Text style={styles.brandGlyph}>✨</Text>
+              </View>
+              <Text style={[styles.logo, { fontSize: isCompact ? 26 : 32 }]}>KitchenHelper</Text>
+            </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.linkText}>Zaten hesabınız var mı? Giriş yapın</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <Text style={styles.title}>Hesap olustur</Text>
+            <Text style={styles.subtitle}>Kisisel tariflerinizi yonetin ve favorilerinizi hemen kaydedin.</Text>
+
+            <View style={styles.inputWrap}>
+              <TextInput 
+                placeholder="Email" 
+                style={styles.input} 
+                keyboardType="email-address"
+                autoCapitalize="none"
+                placeholderTextColor="#9AA2B1"
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+
+            <View style={styles.inputWrap}>
+              <TextInput 
+                placeholder="Sifre" 
+                style={styles.input} 
+                secureTextEntry 
+                placeholderTextColor="#9AA2B1"
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+
+            <View style={styles.inputWrap}>
+              <TextInput 
+                placeholder="Sifreyi onayla" 
+                style={styles.input} 
+                secureTextEntry 
+                placeholderTextColor="#9AA2B1"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+            </View>
+
+            <TouchableOpacity 
+              style={[styles.registerButton, loading && styles.disabledButton]} 
+              onPress={handleRegister}
+              disabled={loading}
+              activeOpacity={0.9}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.registerButtonText}>Kayit ol</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.linkText}>Zaten hesabiniz var mi? Giris yapin</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFDF9',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   scrollContent: {
-    padding: 30,
     justifyContent: 'center',
     flexGrow: 1,
+    alignItems: 'center',
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    elevation: 5,
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
+    gap: 10,
+  },
+  brandIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#FFF1E9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  brandGlyph: {
+    fontSize: 20,
   },
   logo: {
-    fontSize: 28,
     fontWeight: 'bold',
-    color: '#FF6F61',
-    textAlign: 'center',
-    marginBottom: 5,
+    color: '#E85D2A',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#1C2636',
     textAlign: 'center',
-    marginBottom: 5,
+    marginBottom: 6,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#6F7785',
     textAlign: 'center',
-    marginBottom: 35,
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F4F6FA',
+    borderRadius: 14,
+    height: 56,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#ECEFF4',
   },
   input: {
-    backgroundColor: '#F5F5F5',
-    height: 55,
-    borderRadius: 12,
-    paddingHorizontal: 20,
-    marginBottom: 15,
+    flex: 1,
+    height: '100%',
     fontSize: 16,
-    color: '#333',
+    color: '#1C2636',
   },
   registerButton: {
-    backgroundColor: '#FF6F61',
-    height: 55,
-    borderRadius: 12,
+    backgroundColor: '#E85D2A',
+    height: 56,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
-    shadowColor: '#FF6F61',
+    shadowColor: '#E85D2A',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowOpacity: 0.28,
+    shadowRadius: 8,
     elevation: 5,
+  },
+  disabledButton: {
+    opacity: 0.75,
   },
   registerButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '700',
   },
   linkText: {
-    color: '#FF6F61',
+    color: '#E85D2A',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 18,
     fontWeight: '600',
   },
 });

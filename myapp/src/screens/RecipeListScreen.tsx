@@ -8,10 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
   Animated,
   Image,
+  useWindowDimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,9 +23,6 @@ type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'RecipeList'>,
   NativeStackScreenProps<RootStackParamList>
 >;
-
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = (width - 48 - 12) / 2; // 2 column grid
 
 const normalizeText = (value: string) =>
   value
@@ -87,6 +85,21 @@ function FavoriteHeartButton({
 }
 
 export default function RecipeListScreen({ navigation }: Props) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 380;
+  const isTablet = width >= 768;
+  const numColumns = width >= 1080 ? 3 : width >= 390 ? 2 : 1;
+  const basePadding = isCompact ? 12 : isTablet ? 24 : 16;
+  const contentMaxWidth = 1120;
+  const horizontalPadding = width > contentMaxWidth + basePadding * 2
+    ? Math.floor((width - contentMaxWidth) / 2)
+    : basePadding;
+  const contentWidth = width - horizontalPadding * 2;
+  const gridGap = 12;
+  const rawCardWidth = (contentWidth - gridGap * (numColumns - 1)) / numColumns;
+  const cardWidth = Math.min(rawCardWidth, 360);
+  const imageHeight = Math.max(118, Math.min(240, Math.round(cardWidth * 0.66)));
+
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -208,7 +221,7 @@ export default function RecipeListScreen({ navigation }: Props) {
 
     return (
       <TouchableOpacity
-        style={[styles.recipeCard, { backgroundColor: getCardColor(index) }]}
+        style={[styles.recipeCard, { backgroundColor: getCardColor(index), width: cardWidth }]}
         onPress={() => navigation.navigate('RecipeDetail', { recipeId: item.id.toString() })}
         activeOpacity={0.85}
       >
@@ -220,12 +233,12 @@ export default function RecipeListScreen({ navigation }: Props) {
         {validImageUrl ? (
           <Image
             source={{ uri: validImageUrl }}
-            style={styles.recipeImage}
+            style={[styles.recipeImage, { height: imageHeight }]}
             resizeMode="cover"
             onError={() => setBrokenImages(prev => new Set(prev).add(item.id?.toString()))}
           />
         ) : (
-          <View style={styles.recipeImagePlaceholder}>
+          <View style={[styles.recipeImagePlaceholder, { height: imageHeight }]}>
             <Text style={styles.recipeEmoji}>🍽️</Text>
           </View>
         )}
@@ -247,20 +260,20 @@ export default function RecipeListScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Animated.ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
       >
         {/* Header Section */}
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingHorizontal: horizontalPadding, paddingTop: 12 }]}> 
           <Text style={styles.title}>Tarifler</Text>
           <Text style={styles.subtitle}>Sizin için seçilmiş en güzel tarifler</Text>
         </View>
 
         {/* Search Bar */}
-        <View style={styles.searchContainer}>
+        <View style={[styles.searchContainer, { marginHorizontal: horizontalPadding }]}> 
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={styles.searchInput}
@@ -280,7 +293,7 @@ export default function RecipeListScreen({ navigation }: Props) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoryRow}
+          contentContainerStyle={[styles.categoryRow, { paddingHorizontal: horizontalPadding }]}
           style={styles.categoryScroll}
         >
           {CATEGORIES.map((cat) => (
@@ -299,7 +312,7 @@ export default function RecipeListScreen({ navigation }: Props) {
         </ScrollView>
 
         {/* Ingredient Filter Toggle */}
-        <View style={styles.ingredientsFilterContainer}>
+        <View style={[styles.ingredientsFilterContainer, { marginHorizontal: horizontalPadding }]}> 
           <View style={styles.ingredientsFilterHeader}>
             <Text style={styles.ingredientsFilterLabel}>Malzemeye Göre Filtrele</Text>
             <TouchableOpacity
@@ -391,7 +404,7 @@ export default function RecipeListScreen({ navigation }: Props) {
           )}
         </View>
 
-        <View style={styles.resultsCountWrap}>
+        <View style={[styles.resultsCountWrap, { marginHorizontal: horizontalPadding }]}> 
           <Text style={styles.resultsCountText}>
             {filteredRecipes.length} tarif bulundu
           </Text>
@@ -402,13 +415,14 @@ export default function RecipeListScreen({ navigation }: Props) {
           <ActivityIndicator size="large" color="#FF6B35" style={{ marginTop: 40 }} />
         ) : filteredRecipes.length > 0 ? (
           <FlatList
+            key={`recipe-grid-${numColumns}`}
             data={filteredRecipes}
             renderItem={renderRecipeCard}
             keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            columnWrapperStyle={styles.row}
+            numColumns={numColumns}
+            columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
             scrollEnabled={false}
-            contentContainerStyle={styles.gridContainer}
+            contentContainerStyle={[styles.gridContainer, { paddingHorizontal: horizontalPadding }]}
           />
         ) : (
           <View style={styles.emptyState}>
@@ -427,14 +441,14 @@ export default function RecipeListScreen({ navigation }: Props) {
       >
         <Text style={styles.fabText}>+ Yeni Tarif</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#FFFDF9',
   },
   scrollContent: {
     paddingBottom: 100, // Extra padding for FAB
@@ -443,7 +457,7 @@ const styles = StyleSheet.create({
   /* Header */
   header: {
     paddingHorizontal: 16,
-    paddingTop: 50,
+    paddingTop: 12,
     paddingBottom: 10,
     backgroundColor: '#FFFFFF',
     borderBottomLeftRadius: 24,
@@ -677,7 +691,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   recipeCard: {
-    width: CARD_WIDTH,
     borderRadius: 18,
     padding: 14,
     shadowColor: '#000',
@@ -690,7 +703,7 @@ const styles = StyleSheet.create({
   },
   recipeImagePlaceholder: {
     width: '100%',
-    height: 80,
+    height: 120,
     borderRadius: 12,
     backgroundColor: 'rgba(255,255,255,0.4)',
     alignItems: 'center',
@@ -699,7 +712,7 @@ const styles = StyleSheet.create({
   },
   recipeImage: {
     width: '100%',
-    height: 80,
+    height: 120,
     borderRadius: 12,
     marginBottom: 10,
   },

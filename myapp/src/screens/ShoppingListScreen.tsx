@@ -12,8 +12,9 @@ import {
   Modal,
   KeyboardAvoidingView,
   Platform,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -91,6 +92,10 @@ interface ToastState {
 }
 
 export default function ShoppingListScreen({ navigation }: Props) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 380;
+  const horizontalPadding = isCompact ? 12 : 16;
+
   const [activeTab, setActiveTab] = useState<TabKey>('shopping');
 
   /* ── Toast State ── */
@@ -316,12 +321,23 @@ export default function ShoppingListScreen({ navigation }: Props) {
 
   /* ── Render ── */
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <Animated.View style={[styles.headerSection, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+        <Animated.View
+          style={[
+            styles.headerSection,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+              marginHorizontal: horizontalPadding,
+              marginTop: 12,
+              padding: isCompact ? 16 : 20,
+            },
+          ]}
+        >
           <View style={styles.headerRow}>
             <View style={styles.headerIconCircle}>
               <Text style={styles.headerEmoji}>🛒</Text>
@@ -349,7 +365,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
               activeOpacity={0.8}
             >
               <Text style={styles.tabBtnEmoji}>🛒</Text>
-              <Text style={[styles.tabBtnText, activeTab === 'shopping' && styles.tabBtnTextActive]}>
+              <Text style={[styles.tabBtnText, activeTab === 'shopping' && styles.tabBtnTextActive, isCompact && { fontSize: 12 }]}>
                 Alışveriş
               </Text>
             </TouchableOpacity>
@@ -359,7 +375,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
               activeOpacity={0.8}
             >
               <Text style={styles.tabBtnEmoji}>🧊</Text>
-              <Text style={[styles.tabBtnText, activeTab === 'pantry' && styles.tabBtnTextActive]}>
+              <Text style={[styles.tabBtnText, activeTab === 'pantry' && styles.tabBtnTextActive, isCompact && { fontSize: 12 }]}>
                 Mutfağım
               </Text>
             </TouchableOpacity>
@@ -370,8 +386,8 @@ export default function ShoppingListScreen({ navigation }: Props) {
         {activeTab === 'shopping' && (
           <>
             {/* Add Shopping Item */}
-            <View style={styles.addShoppingCard}>
-              <View style={styles.addShoppingRow}>
+            <View style={[styles.addShoppingCard, { marginHorizontal: horizontalPadding }]}>
+              <View style={[styles.addShoppingRow, isCompact && { flexDirection: 'column' }]}>
                 <TextInput
                   style={styles.shoppingInput}
                   placeholder="Yeni ürün ekle..."
@@ -381,7 +397,11 @@ export default function ShoppingListScreen({ navigation }: Props) {
                   onSubmitEditing={handleAddShopping}
                   returnKeyType="done"
                 />
-                <TouchableOpacity style={styles.addShoppingBtn} onPress={handleAddShopping} activeOpacity={0.85}>
+                <TouchableOpacity
+                  style={[styles.addShoppingBtn, isCompact && { width: '100%', paddingVertical: 12, alignItems: 'center' }]}
+                  onPress={handleAddShopping}
+                  activeOpacity={0.85}
+                >
                   <Text style={styles.addShoppingBtnText}>+ Ekle</Text>
                 </TouchableOpacity>
               </View>
@@ -389,7 +409,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
 
             {/* Progress */}
             {totalShopping > 0 && (
-              <View style={styles.progressCard}>
+              <View style={[styles.progressCard, { marginHorizontal: horizontalPadding }]}>
                 <View style={styles.progressHeader}>
                   <Text style={styles.progressLabel}>İlerleme</Text>
                   <Text style={styles.progressPercent}>
@@ -406,13 +426,13 @@ export default function ShoppingListScreen({ navigation }: Props) {
 
             {/* Shopping List */}
             {totalShopping === 0 ? (
-              <View style={styles.emptyState}>
+              <View style={[styles.emptyState, { marginHorizontal: horizontalPadding }]}>
                 <Text style={styles.emptyEmoji}>🛒</Text>
                 <Text style={styles.emptyTitle}>Liste boş</Text>
                 <Text style={styles.emptyDesc}>Alışveriş listenize ürün ekleyerek başlayın.</Text>
               </View>
             ) : (
-              <View style={styles.listContainer}>
+              <View style={[styles.listContainer, { marginHorizontal: horizontalPadding }]}>
                 {[...shoppingItems]
                   .sort((a, b) => (a.purchased === b.purchased ? 0 : a.purchased ? 1 : -1))
                   .map((item) => (
@@ -455,7 +475,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
         {activeTab === 'pantry' && (
           <>
             {/* Search */}
-            <View style={styles.searchCard}>
+            <View style={[styles.searchCard, { marginHorizontal: horizontalPadding }]}>
               <View style={styles.searchContainer}>
                 <Text style={styles.searchIcon}>🔍</Text>
                 <TextInput
@@ -477,7 +497,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.categoryRow}
+              contentContainerStyle={[styles.categoryRow, { paddingHorizontal: horizontalPadding }]}
               style={styles.categoryScroll}
             >
               {CATEGORIES.map((cat) => {
@@ -506,7 +526,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
 
             {/* Pantry Item List */}
             {filteredPantry.length === 0 ? (
-              <View style={styles.emptyState}>
+              <View style={[styles.emptyState, { marginHorizontal: horizontalPadding }]}>
                 <Text style={styles.emptyEmoji}>🍽️</Text>
                 <Text style={styles.emptyTitle}>Malzeme bulunamadı</Text>
                 <Text style={styles.emptyDesc}>
@@ -519,7 +539,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
                 )}
               </View>
             ) : (
-              <View style={styles.listContainer}>
+              <View style={[styles.listContainer, { marginHorizontal: horizontalPadding }]}>
                 {filteredPantry.map((item) => (
                   <View key={item.id} style={[styles.pantryCard, { backgroundColor: CATEGORY_COLORS[item.category] || '#F5F5F5' }]}>
                     <View style={styles.pantryLeft}>
@@ -663,14 +683,14 @@ export default function ShoppingListScreen({ navigation }: Props) {
           </TouchableOpacity>
         </Animated.View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#FFFDF9',
   },
   scrollContent: {
     paddingBottom: 24,
@@ -679,10 +699,7 @@ const styles = StyleSheet.create({
   /* ── Header ── */
   headerSection: {
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    marginTop: 50,
     borderRadius: 20,
-    padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.07,

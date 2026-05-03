@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   Animated,
   FlatList,
-  Dimensions,
   StatusBar,
+  useWindowDimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,8 +22,6 @@ type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList>
 >;
 
-const { width } = Dimensions.get('window');
-
 const ACTION_BUTTONS = [
   { label: 'Tarif Yaz', icon: '✍️', screen: 'AddEditRecipe' as const, primary: true },
   { label: 'Tariflerim',      icon: '📖', screen: 'RecipeList'   as const, primary: false },
@@ -30,6 +29,13 @@ const ACTION_BUTTONS = [
 ];
 
 export default function HomeScreen({ navigation }: Props) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 380;
+  const numColumns = width < 360 ? 1 : 2;
+  const horizontalPadding = isCompact ? 12 : 16;
+  const cardGap = 12;
+  const cardWidth = numColumns === 1 ? width - horizontalPadding * 2 : (width - horizontalPadding * 2 - cardGap) / 2;
+
   const fadeAnim  = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(24)).current;
   const cardAnim  = useRef(new Animated.Value(0)).current;
@@ -74,7 +80,7 @@ export default function HomeScreen({ navigation }: Props) {
 
   const renderRecipeCard = ({ item }: { item: any }) => (
     <TouchableOpacity
-      style={[styles.recipeCard, { backgroundColor: item.color }]}
+      style={[styles.recipeCard, { backgroundColor: item.color, width: cardWidth }]}
       onPress={() => navigation.navigate('RecipeDetail', { recipeId: item.id })}
       activeOpacity={0.82}
     >
@@ -91,15 +97,27 @@ export default function HomeScreen({ navigation }: Props) {
   );
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-    >
-      <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFDF9" />
 
       {/* ── Hero Section ── */}
-      <Animated.View style={[styles.heroSection, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+      <Animated.View
+        style={[
+          styles.heroSection,
+          {
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+            marginHorizontal: horizontalPadding,
+            marginTop: 12,
+            padding: isCompact ? 16 : 20,
+          },
+        ]}
+      >
         {/* Brand Row */}
         <View style={styles.brandRow}>
           <View style={styles.logoCircle}>
@@ -116,7 +134,7 @@ export default function HomeScreen({ navigation }: Props) {
         </Text> */}
 
         {/* Action Buttons */}
-        <View style={styles.actionRow}>
+        <View style={[styles.actionRow, { gap: isCompact ? 8 : 10 }]}> 
           {ACTION_BUTTONS.map((btn) => (
             <TouchableOpacity
               key={btn.label}
@@ -143,13 +161,14 @@ export default function HomeScreen({ navigation }: Props) {
         </View>
 
         <FlatList
+          key={`home-grid-${numColumns}`}
           data={recipes}
           renderItem={renderRecipeCard}
           keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
+          numColumns={numColumns}
+          columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
           scrollEnabled={false}
-          contentContainerStyle={styles.grid}
+          contentContainerStyle={[styles.grid, { paddingHorizontal: horizontalPadding }]}
           ListEmptyComponent={
             !loading ? (
               <View style={{ alignItems: 'center', marginTop: 40 }}>
@@ -160,16 +179,15 @@ export default function HomeScreen({ navigation }: Props) {
           }
         />
       </Animated.View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const CARD_WIDTH = (width - 48 - 12) / 2; // 16px side padding × 2 + 12px gap
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#FFFDF9',
   },
   scrollContent: {
     paddingBottom: 24,
@@ -178,10 +196,7 @@ const styles = StyleSheet.create({
   /* Hero */
   heroSection: {
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    marginTop: 50,
     borderRadius: 20,
-    padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.07,
@@ -243,7 +258,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     borderRadius: 14,
-    minHeight: 72,
+    minHeight: 68,
   },
   actionBtnPrimary: {
     backgroundColor: '#FF6B35',
@@ -304,7 +319,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   recipeCard: {
-    width: CARD_WIDTH,
     borderRadius: 16,
     padding: 14,
     shadowColor: '#000',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Platform, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -18,10 +18,10 @@ import ShoppingListScreen from './src/screens/ShoppingListScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab   = createBottomTabNavigator<MainTabParamList>();
 
-const TAB_ICONS: Record<string, string> = {
-  Home:         '🏠',
-  RecipeList:   '📖',
-  Favorites:    '❤️',
+const TAB_ICONS: Record<keyof MainTabParamList, string> = {
+  Home: '🏠',
+  RecipeList: '📖',
+  Favorites: '❤️',
   ShoppingList: '🛒',
 };
 
@@ -30,21 +30,29 @@ function MainTabs() {
     <Tab.Navigator
       id="MainTabs"
       screenOptions={({ route }) => ({
-        tabBarIcon: () => (
-          <Text style={{ fontSize: 22 }}>{TAB_ICONS[route.name]}</Text>
+        tabBarIcon: ({ focused }) => (
+          <Text style={{ fontSize: focused ? 22 : 20 }}>{TAB_ICONS[route.name]}</Text>
         ),
-        tabBarActiveTintColor:   '#FF6B35',
-        tabBarInactiveTintColor: '#9E9E9E',
+        tabBarActiveTintColor: '#E85D2A',
+        tabBarInactiveTintColor: '#8B94A5',
+        headerTitleStyle: {
+          fontWeight: '700',
+          color: '#1A2433',
+        },
+        headerStyle: {
+          backgroundColor: '#FFFDF9',
+        },
+        headerShadowVisible: false,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
-          borderTopColor: '#F0F0F0',
-          height: 62,
+          borderTopColor: '#EEF0F4',
+          height: Platform.OS === 'ios' ? 86 : 72,
           paddingBottom: 6,
           paddingTop: 4,
-          marginBottom: 16,
+          marginBottom: 12,
           marginHorizontal: 16,
-          borderRadius: 20,
+          borderRadius: 18,
           position: 'absolute',
           bottom: 0,
           left: 0,
@@ -52,10 +60,11 @@ function MainTabs() {
           elevation: 8,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.08,
-          shadowRadius: 8,
+          shadowOpacity: 0.09,
+          shadowRadius: 10,
         },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },
+        tabBarHideOnKeyboard: true,
       })}
     >
       <Tab.Screen
@@ -85,12 +94,22 @@ function MainTabs() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator id="RootStack" initialRouteName="Login">
-        <Stack.Screen name="Login"     component={LoginScreen}     options={{ headerShown: false }} />
-        <Stack.Screen name="Register"  component={RegisterScreen}  options={{ headerShown: false }} />
-        <Stack.Screen name="MainApp"   component={MainTabs}        options={{ headerShown: false }} />
-        <Stack.Screen name="RecipeDetail"   component={RecipeDetailScreen}  options={{ title: 'Tarif Detayı' }} />
-        <Stack.Screen name="AddEditRecipe"  component={AddEditRecipeScreen} options={{ title: 'Tarif Ekle' }} />
+      <Stack.Navigator
+        id="RootStack"
+        initialRouteName="Login"
+        screenOptions={{
+          animation: 'slide_from_right',
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: '#FFFDF9' },
+          headerTitleStyle: { fontWeight: '700', color: '#1A2433' },
+          headerTintColor: '#E85D2A',
+        }}
+      >
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false, animation: 'fade_from_bottom' }} />
+        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false, animation: 'fade_from_bottom' }} />
+        <Stack.Screen name="MainApp" component={MainTabs} options={{ headerShown: false, animation: 'fade' }} />
+        <Stack.Screen name="RecipeDetail" component={RecipeDetailScreen} options={{ title: 'Tarif Detayı' }} />
+        <Stack.Screen name="AddEditRecipe" component={AddEditRecipeScreen} options={{ title: 'Tarif Ekle' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
