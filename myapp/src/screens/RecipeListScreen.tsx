@@ -10,14 +10,16 @@ import {
   ScrollView,
   Animated,
   Image,
+  Alert,
   useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CompositeScreenProps } from '@react-navigation/native';
+import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamList, RootStackParamList } from '../types/navigation';
 import api, { MEDIA_URL } from '../services/api';
+import { canUseProtectedFeatures } from '../services/authSession';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'RecipeList'>,
@@ -124,6 +126,12 @@ export default function RecipeListScreen({ navigation }: Props) {
     ]).start();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchRecipes();
+    }, []),
+  );
+
   const fetchRecipes = async () => {
     try {
       const response = await api.get('/RecipesApi');
@@ -138,6 +146,12 @@ export default function RecipeListScreen({ navigation }: Props) {
   };
 
   const handleToggleFavorite = async (id: number) => {
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      Alert.alert('Giris gerekli', authCheck.message);
+      return;
+    }
+
     // Optimistic update
     setRecipes(prev => prev.map(r => r.id === id ? { ...r, isFavorite: !r.isFavorite } : r));
     try {

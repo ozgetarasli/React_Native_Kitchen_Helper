@@ -165,7 +165,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             OnMessageReceived = context =>
             {
-                context.Token = context.Request.Cookies["auth_token"];
+                var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Token = authHeader["Bearer ".Length..].Trim();
+                }
+                else
+                {
+                    context.Token = context.Request.Cookies["auth_token"];
+                }
+
                 return Task.CompletedTask;
             }
         };
@@ -229,9 +238,9 @@ using (var scope = app.Services.CreateScope())
         var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "recipes.json");
         if (File.Exists(jsonPath))
         {
-            Console.WriteLine("\U0001f4e6 Tarifler y\u00fckleniyor...");
+            Console.WriteLine("\U0001f4e6 Tarifler yükleniyor...");
             await Kitchenhelper.Web.SeedRecipes.SeedAsync(db, jsonPath);
-            Console.WriteLine("\u2705 Tarifler ba\u015far\u0131yla y\u00fcklendi!");
+            Console.WriteLine("\u2705 Tarifler başarıyla yüklendi!");
         }
     }
 }

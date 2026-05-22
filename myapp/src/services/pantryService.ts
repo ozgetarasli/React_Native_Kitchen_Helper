@@ -1,5 +1,13 @@
 import api from './api';
 
+// Türkçe karakterleri ve büyük/küçük harf farklarını normalize eder
+const normalizeIngredient = (value: string): string =>
+  value
+    .toLocaleLowerCase('tr-TR')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+
 export interface PantryItem {
   id: string;
   name: string;
@@ -33,7 +41,7 @@ export const checkIngredientMatch = (
     pantryItems
       .filter(item => item && item.name)
       .map(item => {
-        const normalized = item.name.toLowerCase().trim();
+        const normalized = normalizeIngredient(item.name);
         console.log(`  ✓ Pantry item: "${item.name}" -> "${normalized}"`);
         return normalized;
       })
@@ -49,8 +57,12 @@ export const checkIngredientMatch = (
       return;
     }
     
-    const normalizedName = ing.name.toLowerCase().trim();
-    const hasMatch = pantryIngredients.has(normalizedName);
+    const normalizedName = normalizeIngredient(ing.name);
+    // Tam eşleşme veya kısmi eşleşme (malzeme adı pantry'deki bir girişi içeriyor mu)
+    const hasMatch = pantryIngredients.has(normalizedName) ||
+      Array.from(pantryIngredients).some(
+        pantryName => pantryName.includes(normalizedName) || normalizedName.includes(pantryName)
+      );
     console.log(`  🔎 Recipe: "${ing.name}" -> "${normalizedName}" = ${hasMatch ? '✓ MATCH' : '✗ no match'}`);
     matchMap.set(ing.name, hasMatch);
   });

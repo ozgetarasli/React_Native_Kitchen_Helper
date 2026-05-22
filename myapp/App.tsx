@@ -1,6 +1,7 @@
-import React from 'react';
-import { Platform, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Platform, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { navigationRef } from './src/services/navigationRef';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RootStackParamList, MainTabParamList } from './src/types/navigation';
@@ -14,6 +15,7 @@ import FavoritesScreen from './src/screens/FavoritesScreen';
 import RecipeDetailScreen from './src/screens/RecipeDetailScreen';
 import AddEditRecipeScreen from './src/screens/AddEditRecipeScreen';
 import ShoppingListScreen from './src/screens/ShoppingListScreen';
+import { hasAuthToken } from './src/services/authSession';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab   = createBottomTabNavigator<MainTabParamList>();
@@ -92,11 +94,34 @@ function MainTabs() {
 }
 
 export default function App() {
+  const [initialRouteName, setInitialRouteName] = useState<keyof RootStackParamList | null>(null);
+
+  useEffect(() => {
+    const resolveInitialRoute = async () => {
+      try {
+        const tokenExists = await hasAuthToken();
+        setInitialRouteName(tokenExists ? 'MainApp' : 'Login');
+      } catch {
+        setInitialRouteName('Login');
+      }
+    };
+
+    resolveInitialRoute();
+  }, []);
+
+  if (!initialRouteName) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFDF9' }}>
+        <ActivityIndicator size="large" color="#E85D2A" />
+      </View>
+    );
+  }
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         id="RootStack"
-        initialRouteName="Login"
+        initialRouteName={initialRouteName}
         screenOptions={{
           animation: 'slide_from_right',
           headerShadowVisible: false,

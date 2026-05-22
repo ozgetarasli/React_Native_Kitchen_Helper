@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Image,
   Animated,
+  Alert,
   useWindowDimensions,
 } from 'react-native';
 import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
@@ -16,6 +17,7 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamList, RootStackParamList } from '../types/navigation';
 import api, { MEDIA_URL } from '../services/api';
+import { canUseProtectedFeatures } from '../services/authSession';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'Favorites'>,
@@ -98,6 +100,9 @@ export default function FavoritesScreen({ navigation }: Props) {
       setRecipes(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching favorite recipes:', error);
+      if ((error as any)?.response?.status === 401) {
+        Alert.alert('Giris gerekli', 'Favori tarifleri gormek icin giris yapmaniz gerekiyor.');
+      }
       setRecipes([]);
     } finally {
       setLoading(false);
@@ -111,6 +116,12 @@ export default function FavoritesScreen({ navigation }: Props) {
   );
 
   const handleToggleFavorite = async (id: number) => {
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      Alert.alert('Giris gerekli', authCheck.message);
+      return;
+    }
+
     const previous = recipes;
     setRecipes((prev) => prev.filter((item) => item.id !== id));
 

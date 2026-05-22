@@ -8,6 +8,7 @@ import {
   Animated,
   FlatList,
   StatusBar,
+  Alert,
   useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +17,7 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamList, RootStackParamList } from '../types/navigation';
 import api from '../services/api';
+import { clearSession } from '../services/authSession';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'Home'>,
@@ -42,6 +44,8 @@ export default function HomeScreen({ navigation }: Props) {
 
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const settingsMenuAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.sequence([
@@ -57,7 +61,17 @@ export default function HomeScreen({ navigation }: Props) {
 
   const fetchRecipes = async () => {
     try {
-      const response = await api.get('/RecipesApi');
+      const pantryResponse = await api.get('/PantryApi');
+      const pantryIngredients = Array.isArray(pantryResponse.data)
+        ? pantryResponse.data
+            .map((item: any) => item?.name)
+            .filter((name: any) => typeof name === 'string' && name.trim().length > 0)
+        : [];
+
+      const response = pantryIngredients.length > 0
+        ? await api.post('/RecipesApi/search', { have: pantryIngredients })
+        : await api.get('/RecipesApi');
+
       // Format backend recipes to match the mock structure
       const formatted = response.data.slice(0, 6).map((r: any, index: number) => ({
         id: r.id.toString(),
@@ -96,14 +110,47 @@ export default function HomeScreen({ navigation }: Props) {
     </TouchableOpacity>
   );
 
+  const handleLogout = () => {
+    setShowSettingsMenu(false);
+    settingsMenuAnim.setValue(0);
+
+    Alert.alert('Cikis Yap', 'Uygulamadan cikis yapmak istiyor musunuz?', [
+      { text: 'Iptal', style: 'cancel' },
+      {
+        text: 'Cikis Yap',
+        style: 'destructive',
+        onPress: async () => {
+          await clearSession();
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
+        },
+      },
+    ]);
+  };
+
+  const toggleSettingsMenu = () => {
+    const nextValue = !showSettingsMenu;
+    setShowSettingsMenu(nextValue);
+
+    Animated.spring(settingsMenuAnim, {
+      toValue: nextValue ? 1 : 0,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 6,
+    }).start();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFDF9" />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFDF9" />
+
 
       {/* ── Hero Section ── */}
       <Animated.View
@@ -125,7 +172,43 @@ export default function HomeScreen({ navigation }: Props) {
           </View>
           <View style={styles.brandText}>
             <Text style={styles.heroTitle}>KitchenHelper</Text>
-            
+          </View>
+          <View style={styles.settingsWrap}>
+            <TouchableOpacity style={styles.settingsButton} onPress={toggleSettingsMenu} activeOpacity={0.85}>
+              <Text style={styles.settingsButtonIcon}>⚙️</Text>
+              <Text style={styles.settingsButtonText}>Ayarlar</Text>
+            </TouchableOpacity>
+
+            {showSettingsMenu && (
+              <Animated.View
+                style={[
+                  styles.settingsMenu,
+                  {
+                    opacity: settingsMenuAnim,
+                    transform: [
+                      {
+                        translateY: settingsMenuAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [-10, 0],
+                        }),
+                      },
+                      {
+                        scale: settingsMenuAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0.96, 1],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              >
+                <Text style={styles.settingsMenuLabel}>Hesap</Text>
+                <TouchableOpacity style={styles.settingsMenuItem} onPress={handleLogout} activeOpacity={0.82}>
+                  <Text style={styles.settingsMenuItemIcon}>↩</Text>
+                  <Text style={styles.settingsMenuItemText}>Cikis Yap</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            )}
           </View>
         </View>
 
@@ -233,6 +316,73 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#1A1A1A',
     letterSpacing: -0.5,
+  },
+  settingsWrap: {
+    position: 'relative',
+  },
+  settingsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F7F8FA',
+    borderWidth: 1,
+    borderColor: '#E7EAF0',
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  settingsButtonIcon: {
+    fontSize: 13,
+  },
+  settingsButtonText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#415066',
+  },
+  settingsMenu: {
+    position: 'absolute',
+    top: 46,
+    right: 0,
+    minWidth: 170,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ECEFF4',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    elevation: 6,
+    zIndex: 20,
+  },
+  settingsMenuLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#8B94A5',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    paddingHorizontal: 10,
+    paddingTop: 4,
+    paddingBottom: 8,
+  },
+  settingsMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: '#FFF4F1',
+  },
+  settingsMenuItemIcon: {
+    fontSize: 14,
+    color: '#BE3B2B',
+  },
+  settingsMenuItemText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#BE3B2B',
   },
   heroSubtitle: {
     fontSize: 14,

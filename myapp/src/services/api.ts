@@ -2,6 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import { AUTH_TOKEN_KEY } from './authSession';
+import { navigateTo } from './navigationRef';
 
 // Geliştirme cihazının yerel IP adresini otomatik bul
 let HOST_IP = '192.168.1.3'; // Başlangıç / Fallback değeri
@@ -30,13 +32,28 @@ const api = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem('auth_token');
+    const token = await AsyncStorage.getItem(AUTH_TOKEN_KEY);
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else if (config.headers?.Authorization) {
+      delete config.headers.Authorization;
     }
+
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      await AsyncStorage.multiRemove([AUTH_TOKEN_KEY, 'user_info']);
+      navigateTo('Login');
+    }
     return Promise.reject(error);
   }
 );

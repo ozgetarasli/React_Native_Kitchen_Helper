@@ -20,6 +20,7 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainTabParamList, RootStackParamList } from '../types/navigation';
 import api from '../services/api';
+import { canUseProtectedFeatures } from '../services/authSession';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'ShoppingList'>,
@@ -130,8 +131,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
       setShoppingItems(formatted);
     } catch (e) {
       console.error('Error fetching shopping list:', e);
-      // Fallback
-      setShoppingItems(INITIAL_SHOPPING);
+      setShoppingItems([]);
     }
   };
 
@@ -173,6 +173,12 @@ export default function ShoppingListScreen({ navigation }: Props) {
 
   /* ── Shopping Handlers ── */
   const handleAddShopping = async () => {
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      showToast('Giris gerekli', 'warning', '🔒');
+      return;
+    }
+
     if (!newShoppingName.trim()) return;
     const name = newShoppingName.trim();
     try {
@@ -186,6 +192,12 @@ export default function ShoppingListScreen({ navigation }: Props) {
   };
 
   const togglePurchased = async (id: string) => {
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      showToast('Giris gerekli', 'warning', '🔒');
+      return;
+    }
+
     const item = shoppingItems.find(i => i.id === id);
     if (!item) return;
     
@@ -206,6 +218,12 @@ export default function ShoppingListScreen({ navigation }: Props) {
   };
 
   const removeShopping = async (id: string) => {
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      showToast('Giris gerekli', 'warning', '🔒');
+      return;
+    }
+
     const previousItems = [...shoppingItems];
     // optimistic update
     setShoppingItems((prev) => prev.filter((i) => i.id !== id));
@@ -219,6 +237,12 @@ export default function ShoppingListScreen({ navigation }: Props) {
   };
 
   const addToShoppingList = async (pantryItem: PantryItem) => {
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      showToast('Giris gerekli', 'warning', '🔒');
+      return;
+    }
+
     const alreadyExists = shoppingItems.some(
       (s) => s.name.toLowerCase() === pantryItem.name.toLowerCase() && !s.purchased
     );
@@ -226,9 +250,11 @@ export default function ShoppingListScreen({ navigation }: Props) {
       showToast(`"${pantryItem.name}" zaten alışveriş listenizde.`, 'info', 'ℹ️');
       return;
     }
-    const name = `${pantryItem.name} (${pantryItem.quantity} ${pantryItem.unit})`;
     try {
-      await api.post('/ShoppingListApi', { name });
+      await api.post('/ShoppingListApi', {
+        name: pantryItem.name,
+        quantity: `${pantryItem.quantity} ${pantryItem.unit}`.trim(),
+      });
       fetchShoppingList();
       showToast(`"${pantryItem.name}" alışveriş listesine eklendi.`, 'success', '🛒');
     } catch (e) {
@@ -263,6 +289,12 @@ export default function ShoppingListScreen({ navigation }: Props) {
   };
 
   const handleSavePantry = async () => {
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      showToast('Giris gerekli', 'warning', '🔒');
+      return;
+    }
+
     if (!formName.trim() || !formQuantity.trim()) {
       showToast('Malzeme adı ve miktar boş olamaz.', 'warning', '⚠️');
       return;
@@ -297,6 +329,12 @@ export default function ShoppingListScreen({ navigation }: Props) {
         text: 'Sil', 
         style: 'destructive', 
         onPress: async () => {
+          const authCheck = await canUseProtectedFeatures();
+          if (!authCheck.allowed) {
+            showToast('Giris gerekli', 'warning', '🔒');
+            return;
+          }
+
           try {
             await api.delete(`/PantryApi/${id}`);
             setPantryItems((prev) => prev.filter((i) => i.id !== id));

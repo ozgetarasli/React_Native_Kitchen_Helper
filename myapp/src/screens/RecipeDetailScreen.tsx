@@ -8,13 +8,15 @@ import {
   ActivityIndicator,
   Image,
   Animated,
-  SafeAreaView,
+  Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { fetchRecipeDetail, toggleRecipeFavorite, RecipeDetailResponse } from '../services/recipeService';
 import { fetchUserPantryItems, checkIngredientMatch, calculateMatchPercentage } from '../services/pantryService';
 import api, { MEDIA_URL } from '../services/api';
+import { canUseProtectedFeatures } from '../services/authSession';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RecipeDetail'>;
 
@@ -161,6 +163,12 @@ export default function RecipeDetailScreen({ route, navigation }: Props) {
   const handleToggleFavorite = async () => {
     if (!recipe) return;
 
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      Alert.alert('Giris gerekli', authCheck.message);
+      return;
+    }
+
     Animated.sequence([
       Animated.spring(favoriteScaleAnim, {
         toValue: 1.25,
@@ -218,6 +226,12 @@ export default function RecipeDetailScreen({ route, navigation }: Props) {
     ingredientMap: Map<string, { amount?: string }>
   ) => {
     if (selectedNames.length === 0 || addingToShoppingList) return;
+
+    const authCheck = await canUseProtectedFeatures();
+    if (!authCheck.allowed) {
+      setShoppingFeedback({ message: authCheck.message, type: 'error' });
+      return;
+    }
 
     setAddingToShoppingList(true);
     try {

@@ -16,7 +16,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types/navigation';
 import api from '../services/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setAuthenticatedSession } from '../services/authSession';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -42,10 +42,7 @@ export default function LoginScreen({ navigation }: Props) {
       });
 
       if (response.data && response.data.token) {
-        await AsyncStorage.setItem('auth_token', response.data.token);
-        if (response.data.user) {
-          await AsyncStorage.setItem('user_info', JSON.stringify(response.data.user));
-        }
+        await setAuthenticatedSession(response.data.token, response.data.user);
         navigation.replace('MainApp');
       }
     } catch (error: any) {
@@ -54,10 +51,6 @@ export default function LoginScreen({ navigation }: Props) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGuestLogin = () => {
-    navigation.replace('MainApp');
   };
 
   return (
@@ -123,16 +116,6 @@ export default function LoginScreen({ navigation }: Props) {
 
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
               <Text style={styles.linkText}>Hesabiniz yok mu? Kayit Ol</Text>
-            </TouchableOpacity>
-
-            <View style={styles.divider}>
-              <View style={styles.line} />
-              <Text style={styles.dividerText}>veya</Text>
-              <View style={styles.line} />
-            </View>
-
-            <TouchableOpacity style={styles.guestButton} onPress={handleGuestLogin} activeOpacity={0.9}>
-              <Text style={styles.guestButtonText}>Misafir olarak devam et</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -245,37 +228,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 18,
     fontWeight: '600',
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 24,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E6EAF2',
-  },
-  dividerText: {
-    paddingHorizontal: 15,
-    color: '#95A0B2',
-    fontSize: 14,
-  },
-  guestButton: {
-    borderWidth: 1.5,
-    borderColor: '#E5A88D',
-    height: 54,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    gap: 8,
-    backgroundColor: '#FFF8F4',
-  },
-  guestButtonText: {
-    color: '#E85D2A',
-    fontSize: 15,
-    fontWeight: '700'
   },
 });
 
